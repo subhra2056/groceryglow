@@ -142,36 +142,38 @@ export default function AdminOrdersPage() {
                   <p className="font-bold text-forest-green">{formatPrice(order.total)}</p>
                 </div>
 
-                {/* Status advance button */}
-                {NEXT_STATUS[order.order_status] && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      updateStatus(order, NEXT_STATUS[order.order_status]!)
-                    }}
-                    disabled={updatingId === order.id}
-                    className="flex-shrink-0 px-3 py-1.5 bg-forest-green text-white text-xs font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-                  >
-                    {updatingId === order.id ? (
-                      <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin inline-block" />
-                    ) : (
-                      `Mark as ${NEXT_STATUS[order.order_status]!.charAt(0).toUpperCase() + NEXT_STATUS[order.order_status]!.slice(1)}`
+                {/* Action buttons — grouped so they never split across rows */}
+                {(NEXT_STATUS[order.order_status] || ['placed', 'confirmed'].includes(order.order_status)) && (
+                  <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                    {NEXT_STATUS[order.order_status] && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          updateStatus(order, NEXT_STATUS[order.order_status]!)
+                        }}
+                        disabled={updatingId === order.id}
+                        className="px-3 py-1.5 bg-forest-green text-white text-xs font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                      >
+                        {updatingId === order.id ? (
+                          <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin inline-block" />
+                        ) : (
+                          `Mark as ${NEXT_STATUS[order.order_status]!.charAt(0).toUpperCase() + NEXT_STATUS[order.order_status]!.slice(1)}`
+                        )}
+                      </button>
                     )}
-                  </button>
-                )}
-
-                {/* Cancel button */}
-                {['placed', 'confirmed'].includes(order.order_status) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      updateStatus(order, 'cancelled')
-                    }}
-                    disabled={updatingId === order.id}
-                    className="flex-shrink-0 px-3 py-1.5 border border-red-200 text-red-500 text-xs font-semibold rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
+                    {['placed', 'confirmed'].includes(order.order_status) && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          updateStatus(order, 'cancelled')
+                        }}
+                        disabled={updatingId === order.id}
+                        className="px-3 py-1.5 border border-red-200 text-red-500 text-xs font-semibold rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
 

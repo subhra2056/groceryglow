@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     postal_code: '',
-    country: 'United States',
+    country: 'India',
     payment_method: 'cash_on_delivery',
   })
 
@@ -208,35 +208,35 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Full Name *</label>
-                      <input value={form.full_name} onChange={(e) => update('full_name', e.target.value)} className="input" placeholder="John Doe" required />
+                      <input value={form.full_name} onChange={(e) => update('full_name', e.target.value)} className="input" placeholder="Enter your full name" required />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Phone *</label>
-                      <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className="input" placeholder="+1 234 567 8900" required />
+                      <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className="input" placeholder="Enter your phone number" required />
                     </div>
                     <div className="md:col-span-2">
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 1 *</label>
-                      <input value={form.address_line_1} onChange={(e) => update('address_line_1', e.target.value)} className="input" placeholder="123 Main Street" required />
+                      <input value={form.address_line_1} onChange={(e) => update('address_line_1', e.target.value)} className="input" placeholder="Enter your street address" required />
                     </div>
                     <div className="md:col-span-2">
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 2 (optional)</label>
-                      <input value={form.address_line_2} onChange={(e) => update('address_line_2', e.target.value)} className="input" placeholder="Apt, Suite, Unit…" />
+                      <input value={form.address_line_2} onChange={(e) => update('address_line_2', e.target.value)} className="input" placeholder="Flat no., building, landmark (optional)" />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">City *</label>
-                      <input value={form.city} onChange={(e) => update('city', e.target.value)} className="input" placeholder="San Francisco" required />
+                      <input value={form.city} onChange={(e) => update('city', e.target.value)} className="input" placeholder="Enter your city" required />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">State *</label>
-                      <input value={form.state} onChange={(e) => update('state', e.target.value)} className="input" placeholder="California" required />
+                      <input value={form.state} onChange={(e) => update('state', e.target.value)} className="input" placeholder="Enter your state" required />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Postal Code *</label>
-                      <input value={form.postal_code} onChange={(e) => update('postal_code', e.target.value)} className="input" placeholder="94102" required />
+                      <input value={form.postal_code} onChange={(e) => update('postal_code', e.target.value)} className="input" placeholder="Enter your PIN code" required />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600 mb-1.5 block">Country *</label>
-                      <input value={form.country} onChange={(e) => update('country', e.target.value)} className="input" placeholder="United States" required />
+                      <input value={form.country} onChange={(e) => update('country', e.target.value)} className="input" placeholder="Enter your country" required />
                     </div>
                   </div>
 

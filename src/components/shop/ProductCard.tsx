@@ -48,6 +48,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
   const handleIncrease = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (quantity >= product.stock) return
     await updateQuantity(product.id, quantity + 1)
   }
 
@@ -146,7 +147,6 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
                 <span className="text-gray-300 text-[10px] line-through">{formatPrice(product.price)}</span>
               )}
             </div>
-            <p className="text-[9px] text-gray-400 tracking-wide">/{product.unit ?? 'unit'}</p>
           </div>
 
           {/* Blinkit-style quantity control */}
@@ -170,7 +170,8 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
               <span className="w-5 sm:w-6 text-center text-white text-xs font-bold">{quantity}</span>
               <button
                 onClick={handleIncrease}
-                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
+                disabled={quantity >= product.stock}
+                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Plus className="w-3 h-3" />
               </button>

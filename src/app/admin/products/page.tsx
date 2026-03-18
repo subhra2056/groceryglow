@@ -28,7 +28,6 @@ interface ProductForm {
   price: string
   discount_price: string
   stock: string
-  unit: string
   images: string
   is_featured: boolean
   is_organic: boolean
@@ -44,7 +43,6 @@ const emptyForm: ProductForm = {
   price: '',
   discount_price: '',
   stock: '',
-  unit: '',
   images: '',
   is_featured: false,
   is_organic: false,
@@ -108,7 +106,6 @@ export default function AdminProductsPage() {
       price: String(product.price),
       discount_price: product.discount_price ? String(product.discount_price) : '',
       stock: String(product.stock),
-      unit: product.unit ?? '',
       images: product.images?.join(', ') ?? '',
       is_featured: product.is_featured,
       is_organic: product.is_organic,
@@ -148,7 +145,6 @@ export default function AdminProductsPage() {
       price: parseFloat(form.price),
       discount_price: form.discount_price ? parseFloat(form.discount_price) : null,
       stock: parseInt(form.stock, 10),
-      unit: form.unit.trim() || null,
       images: form.images
         ? form.images.split(',').map((s) => s.trim()).filter(Boolean)
         : [],
@@ -426,10 +422,10 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Price, discount price, stock, unit */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Price, discount price, stock */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="label-field">Price (USD) *</label>
+                  <label className="label-field">Price (INR) *</label>
                   <input
                     type="number"
                     min="0"
@@ -437,7 +433,7 @@ export default function AdminProductsPage() {
                     value={form.price}
                     onChange={(e) => updateField('price', e.target.value)}
                     className="input text-sm"
-                    placeholder="2.99"
+                    placeholder="299"
                     required
                   />
                 </div>
@@ -463,15 +459,6 @@ export default function AdminProductsPage() {
                     className="input text-sm"
                     placeholder="100"
                     required
-                  />
-                </div>
-                <div>
-                  <label className="label-field">Unit</label>
-                  <input
-                    value={form.unit}
-                    onChange={(e) => updateField('unit', e.target.value)}
-                    className="input text-sm"
-                    placeholder="kg / dozen / piece"
                   />
                 </div>
               </div>

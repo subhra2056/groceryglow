@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   type ReactNode,
 } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -22,9 +23,18 @@ export interface AppNotification {
   created_at: string
 }
 
+export interface ToastNotification {
+  id: string
+  type: AppNotification['type']
+  title: string
+  message: string
+}
+
 interface NotificationContextValue {
   notifications: AppNotification[]
   unreadCount: number
+  toast: ToastNotification | null
+  dismissToast: () => void
   markAsRead: (id: string) => Promise<void>
   markAllAsRead: () => Promise<void>
   deleteNotification: (id: string) => Promise<void>
@@ -36,8 +46,15 @@ const NotificationContext = createContext<NotificationContextValue | null>(null)
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<AppNotification[]>([])
+  const [toast, setToast] = useState<ToastNotification | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { user } = useAuth()
   const supabase = createClient()
+
+  const dismissToast = useCallback(() => {
+    setToast(null)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+  }, [])
 
   // Load existing notifications
   const loadNotifications = useCallback(async () => {
@@ -132,6 +149,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       }
       setNotifications((prev) => [notif, ...prev])
 
+      // Show toast popup
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+      setToast({ id: notif.id, type: n.type, title: n.title, message: n.message })
+      toastTimerRef.current = setTimeout(() => setToast(null), 5000)
+
       // Also persist if logged in
       if (user) {
         supabase.from('notifications').insert({
@@ -188,7 +210,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAll, addLocalNotification }}
+      value={{ notifications, unreadCount, toast, dismissToast, markAsRead, markAllAsRead, deleteNotification, clearAll, addLocalNotification }}
     >
       {children}
     </NotificationContext.Provider>

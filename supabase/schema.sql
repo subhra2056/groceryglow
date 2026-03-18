@@ -74,7 +74,6 @@ CREATE TABLE IF NOT EXISTS products (
   discount_price    numeric(10,2),
   currency          text NOT NULL DEFAULT 'USD',
   stock             integer NOT NULL DEFAULT 0,
-  unit              text,
   images            text[],
   is_featured       boolean NOT NULL DEFAULT false,
   is_organic        boolean NOT NULL DEFAULT false,
@@ -377,28 +376,28 @@ INSERT INTO categories (name, slug, description, is_featured) VALUES
   ('Organic',        'organic',      'Certified organic products across all categories', false)
 ON CONFLICT (slug) DO NOTHING;
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Organic Bananas','organic-bananas',(SELECT id FROM categories WHERE slug='fresh-fruits'),'Sweet and ripe organic bananas',2.99,2.49,120,'dozen',ARRAY['https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80'],true,true,ARRAY['offer','bestseller']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Organic Bananas','organic-bananas',(SELECT id FROM categories WHERE slug='fresh-fruits'),'Sweet and ripe organic bananas',2.99,2.49,120,ARRAY['https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80'],true,true,ARRAY['offer','bestseller']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='organic-bananas');
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Fresh Tomatoes','fresh-tomatoes',(SELECT id FROM categories WHERE slug='vegetables'),'Juicy vine-ripened tomatoes',1.99,1.79,200,'kg',ARRAY['https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=400&q=80'],true,false,ARRAY['offer','bestseller']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Fresh Tomatoes','fresh-tomatoes',(SELECT id FROM categories WHERE slug='vegetables'),'Juicy vine-ripened tomatoes',1.99,1.79,200,ARRAY['https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=400&q=80'],true,false,ARRAY['offer','bestseller']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='fresh-tomatoes');
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Organic Whole Milk','organic-whole-milk',(SELECT id FROM categories WHERE slug='dairy'),'Full-fat organic milk from grass-fed cows',4.49,NULL,80,'gallon',ARRAY['https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80'],true,true,ARRAY['bestseller']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Organic Whole Milk','organic-whole-milk',(SELECT id FROM categories WHERE slug='dairy'),'Full-fat organic milk from grass-fed cows',4.49,NULL,80,ARRAY['https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80'],true,true,ARRAY['bestseller']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='organic-whole-milk');
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Sourdough Bread','sourdough-bread',(SELECT id FROM categories WHERE slug='bakery'),'Artisan sourdough baked fresh daily',6.99,NULL,40,'loaf',ARRAY['https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&q=80'],true,false,ARRAY['new']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Sourdough Bread','sourdough-bread',(SELECT id FROM categories WHERE slug='bakery'),'Artisan sourdough baked fresh daily',6.99,NULL,40,ARRAY['https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&q=80'],true,false,ARRAY['new']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='sourdough-bread');
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Organic Broccoli','organic-broccoli',(SELECT id FROM categories WHERE slug='vegetables'),'Crisp organic broccoli crowns',2.49,1.99,150,'head',ARRAY['https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=400&q=80'],true,true,ARRAY['offer']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Organic Broccoli','organic-broccoli',(SELECT id FROM categories WHERE slug='vegetables'),'Crisp organic broccoli crowns',2.49,1.99,150,ARRAY['https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=400&q=80'],true,true,ARRAY['offer']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='organic-broccoli');
 
-INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, unit, images, is_featured, is_organic, tags)
-SELECT 'Fresh Strawberries','fresh-strawberries',(SELECT id FROM categories WHERE slug='fresh-fruits'),'Sweet California strawberries',3.99,3.49,90,'punnet',ARRAY['https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&q=80'],true,false,ARRAY['seasonal','bestseller']
+INSERT INTO products (name, slug, category_id, short_description, price, discount_price, stock, images, is_featured, is_organic, tags)
+SELECT 'Fresh Strawberries','fresh-strawberries',(SELECT id FROM categories WHERE slug='fresh-fruits'),'Sweet California strawberries',3.99,3.49,90,ARRAY['https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&q=80'],true,false,ARRAY['seasonal','bestseller']
 WHERE NOT EXISTS (SELECT 1 FROM products WHERE slug='fresh-strawberries');
 
 -- Patch images on existing rows (idempotent)

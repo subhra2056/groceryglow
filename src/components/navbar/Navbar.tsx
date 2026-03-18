@@ -27,6 +27,7 @@ import { useCart } from '@/contexts/CartContext'
 import { cn } from '@/lib/utils'
 import NotificationBell from '@/components/navbar/NotificationBell'
 import BugReportModal from '@/components/navbar/BugReportModal'
+import NotificationToast from '@/components/ui/NotificationToast'
 import { createClient } from '@/lib/supabase/client'
 
 const navLinks = [
@@ -732,6 +733,9 @@ function NavbarContent() {
 
       {/* Bug Report Modal */}
       {bugReportOpen && <BugReportModal onClose={() => setBugReportOpen(false)} />}
+
+      {/* Cart reminder / order update toast */}
+      <NotificationToast />
     </>
   )
 }
