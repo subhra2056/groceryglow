@@ -1,0 +1,542 @@
+{
+  "project": {
+    "name": "GroceryGlow",
+    "type": "full-stack-grocery-application",
+    "purpose": "A modern grocery shopping application with a premium landing page, a gorgeous responsive navbar, customer shopping flows, and a single-admin management system backed by Supabase.",
+    "target_ai_output": "Use this JSON as the product and technical specification for generating the full application.",
+    "stack": {
+      "language": "TypeScript",
+      "frontend": "React",
+      "framework": "Next.js",
+      "backend": "Next.js API routes or server actions with Firebase integration"
+    }
+  },
+  "branding": {
+    "style": "luxury-fresh-modern",
+    "mood": [
+      "clean",
+      "premium",
+      "fresh",
+      "friendly",
+      "trustworthy"
+    ],
+    "primaryColors": {
+      "forestGreen": "#1F6B4F",
+      "leafGreen": "#4CAF50",
+      "cream": "#FFF8EE",
+      "charcoal": "#1E1E1E",
+      "sunsetOrange": "#FF8A3D"
+    },
+    "designNotes": [
+      "The landing page should feel visually rich and high-end, not generic.",
+      "Use large hero typography, elegant spacing, soft gradients, fresh produce imagery, and smooth animations.",
+      "The navbar should be beautiful, sticky, responsive, and polished on both desktop and mobile."
+    ]
+  },
+  "roles": {
+    "customer": {
+      "count": "multiple",
+      "permissions": [
+        "sign_up",
+        "sign_in",
+        "browse_products",
+        "search_products",
+        "filter_products",
+        "add_to_cart",
+        "manage_cart",
+        "place_order",
+        "view_orders",
+        "manage_profile",
+        "manage_addresses",
+        "add_reviews",
+        "manage_wishlist"
+      ]
+    },
+    "admin": {
+      "count": 1,
+      "description": "There must be only one admin account in the entire system.",
+      "permissions": [
+        "dashboard_access",
+        "manage_products",
+        "manage_categories",
+        "manage_orders",
+        "manage_inventory",
+        "manage_banners",
+        "manage_customers",
+        "view_sales_analytics",
+        "update_site_content"
+      ],
+      "constraints": [
+        "Admin account should be seeded manually or configured through Firebase with a fixed UID/email.",
+        "No public admin signup route should exist.",
+        "Only the predefined admin user can access admin pages."
+      ]
+    }
+  },
+  "authentication": {
+    "provider": "Supabase Auth",
+    "methods": [
+      "email_password",
+      "google_sign_in_optional"
+    ],
+    "rules": {
+      "customers_can_register": true,
+      "admin_can_register_publicly": false,
+      "single_admin_only": true,
+      "admin_identifier_strategy": {
+        "recommended": "Store a fixed admin user record with role in the SQL database and enforce it with frontend guards, server-side authorization, and Row Level Security policies."
+      }
+    }
+  },
+  "pages": [
+    {
+      "name": "Landing Page",
+      "route": "/",
+      "visibility": "public",
+      "sections": [
+        "gorgeous sticky navbar",
+        "hero section with CTA",
+        "featured categories",
+        "best selling products",
+        "fresh offers banner",
+        "how it works",
+        "why choose us",
+        "customer testimonials",
+        "newsletter signup",
+        "footer"
+      ],
+      "requirements": [
+        "The hero should immediately communicate freshness, convenience, and premium quality.",
+        "Include CTA buttons like Shop Now and Explore Categories.",
+        "Use subtle animations, card hover effects, and polished section transitions."
+      ]
+    },
+    {
+      "name": "Product Listing",
+      "route": "/shop",
+      "visibility": "public_and_customer",
+      "features": [
+        "search",
+        "category_filters",
+        "price_filters",
+        "sort_by_popularity",
+        "sort_by_price",
+        "product_cards",
+        "quick_add_to_cart",
+        "wishlist_toggle"
+      ]
+    },
+    {
+      "name": "Product Details",
+      "route": "/product/:id",
+      "visibility": "public_and_customer",
+      "features": [
+        "image_gallery",
+        "price_display",
+        "discount_badge",
+        "stock_status",
+        "description",
+        "nutrition_or_details",
+        "reviews",
+        "related_products"
+      ]
+    },
+    {
+      "name": "Cart",
+      "route": "/cart",
+      "visibility": "customer",
+      "features": [
+        "update_quantity",
+        "remove_items",
+        "coupon_code_optional",
+        "price_summary",
+        "proceed_to_checkout"
+      ]
+    },
+    {
+      "name": "Checkout",
+      "route": "/checkout",
+      "visibility": "customer",
+      "features": [
+        "delivery_address",
+        "order_summary",
+        "payment_method_selection",
+        "cash_on_delivery_optional",
+        "place_order"
+      ]
+    },
+    {
+      "name": "Customer Dashboard",
+      "route": "/account",
+      "visibility": "customer",
+      "features": [
+        "profile_management",
+        "saved_addresses",
+        "order_history",
+        "wishlist",
+        "logout"
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "route": "/admin",
+      "visibility": "single_admin_only",
+      "features": [
+        "sales_overview",
+        "inventory_summary",
+        "recent_orders",
+        "customer_count",
+        "top_products"
+      ]
+    },
+    {
+      "name": "Admin Product Management",
+      "route": "/admin/products",
+      "visibility": "single_admin_only",
+      "features": [
+        "create_product",
+        "edit_product",
+        "delete_product",
+        "toggle_featured",
+        "update_stock"
+      ]
+    },
+    {
+      "name": "Admin Order Management",
+      "route": "/admin/orders",
+      "visibility": "single_admin_only",
+      "features": [
+        "view_all_orders",
+        "update_order_status",
+        "track_payment_status",
+        "filter_orders"
+      ]
+    }
+  ],
+  "navbar": {
+    "type": "premium-responsive-navbar",
+    "visibility": "all_pages",
+    "desktopItems": [
+      "Home",
+      "Shop",
+      "Categories",
+      "Offers",
+      "About",
+      "Contact"
+    ],
+    "customerActions": [
+      "Search",
+      "Wishlist",
+      "Cart",
+      "Profile"
+    ],
+    "guestActions": [
+      "Sign In",
+      "Sign Up"
+    ],
+    "adminActions": [
+      "Dashboard",
+      "Products",
+      "Orders",
+      "Customers",
+      "Logout"
+    ],
+    "mobileRequirements": [
+      "hamburger_menu",
+      "smooth_slide_animation",
+      "sticky_top_behavior",
+      "cart_badge",
+      "profile_dropdown"
+    ],
+    "designRequirements": [
+      "Glassmorphism or soft elevated background effect",
+      "Rounded action buttons",
+      "Animated hover states",
+      "Prominent logo area",
+      "Elegant search bar treatment"
+    ]
+  },
+  "supabase": {
+    "services": [
+      "Supabase Auth",
+      "PostgreSQL Database",
+      "Supabase Storage"
+    ],
+    "databaseType": "PostgreSQL",
+    "schema": {
+      "profiles": {
+        "description": "Stores both customers and the single admin. Connected to Supabase auth users.",
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key references auth.users(id)",
+          "role": "text check in ('customer','admin')",
+          "full_name": "text",
+          "email": "text unique",
+          "phone": "text",
+          "photo_url": "text",
+          "is_active": "boolean default true",
+          "created_at": "timestamptz default now()",
+          "last_login_at": "timestamptz"
+        }
+      },
+      "categories": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "name": "text",
+          "slug": "text unique",
+          "image": "text",
+          "description": "text",
+          "is_featured": "boolean default false",
+          "created_at": "timestamptz default now()"
+        }
+      },
+      "products": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "name": "text",
+          "slug": "text unique",
+          "category_id": "uuid references categories(id)",
+          "description": "text",
+          "short_description": "text",
+          "price": "numeric(10,2)",
+          "discount_price": "numeric(10,2)",
+          "currency": "text default 'USD'",
+          "stock": "integer",
+          "unit": "text",
+          "images": "text[]",
+          "is_featured": "boolean default false",
+          "is_organic": "boolean default false",
+          "rating_average": "numeric(3,2) default 0",
+          "review_count": "integer default 0",
+          "tags": "text[]",
+          "created_at": "timestamptz default now()",
+          "updated_at": "timestamptz default now()"
+        }
+      },
+      "carts": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "user_id": "uuid references profiles(id) unique",
+          "subtotal": "numeric(10,2) default 0",
+          "updated_at": "timestamptz default now()"
+        }
+      },
+      "cart_items": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "cart_id": "uuid references carts(id) on delete cascade",
+          "product_id": "uuid references products(id)",
+          "quantity": "integer",
+          "price": "numeric(10,2)",
+          "created_at": "timestamptz default now()"
+        }
+      },
+      "orders": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "user_id": "uuid references profiles(id)",
+          "order_number": "text unique",
+          "subtotal": "numeric(10,2)",
+          "delivery_fee": "numeric(10,2)",
+          "discount": "numeric(10,2)",
+          "total": "numeric(10,2)",
+          "payment_method": "text",
+          "payment_status": "text check in ('pending','paid','failed')",
+          "order_status": "text check in ('placed','confirmed','packed','shipped','delivered','cancelled')",
+          "delivery_full_name": "text",
+          "delivery_phone": "text",
+          "delivery_address_line_1": "text",
+          "delivery_address_line_2": "text",
+          "delivery_city": "text",
+          "delivery_state": "text",
+          "delivery_postal_code": "text",
+          "delivery_country": "text",
+          "created_at": "timestamptz default now()",
+          "updated_at": "timestamptz default now()"
+        }
+      },
+      "order_items": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "order_id": "uuid references orders(id) on delete cascade",
+          "product_id": "uuid references products(id)",
+          "name": "text",
+          "price": "numeric(10,2)",
+          "quantity": "integer",
+          "image": "text"
+        }
+      },
+      "wishlists": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "user_id": "uuid references profiles(id)",
+          "product_id": "uuid references products(id)",
+          "created_at": "timestamptz default now()"
+        }
+      },
+      "reviews": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "product_id": "uuid references products(id)",
+          "user_id": "uuid references profiles(id)",
+          "user_name": "text",
+          "rating": "integer",
+          "comment": "text",
+          "created_at": "timestamptz default now()"
+        }
+      },
+      "banners": {
+        "primaryKey": "id",
+        "fields": {
+          "id": "uuid primary key default gen_random_uuid()",
+          "title": "text",
+          "subtitle": "text",
+          "image": "text",
+          "cta_text": "text",
+          "cta_link": "text",
+          "is_active": "boolean default true",
+          "created_at": "timestamptz default now()"
+        }
+      }
+    },
+    "rlsPoliciesIntent": {
+      "profiles": [
+        "Customers can read and update only their own profile row.",
+        "Only the single admin can read all profiles and update admin-managed fields."
+      ],
+      "products_categories_banners": [
+        "Public read access is allowed.",
+        "Only admin can create, update, or delete."
+      ],
+      "carts_wishlists_orders": [
+        "Customers can read and write only their own data.",
+        "Admin can read all orders and update order statuses."
+      ],
+      "adminConstraint": [
+        "Reject creation of additional admin users beyond the predefined admin UUID/email through SQL constraints, seeded admin data, and server-side checks."
+      ]
+    }
+  },
+  "features": {
+    "customer": [
+      "account registration and login",
+      "beautiful home and shopping experience",
+      "product search and filtering",
+      "cart and wishlist",
+      "checkout and order placement",
+      "order tracking",
+      "reviews and ratings",
+      "profile and address management"
+    ],
+    "admin": [
+      "single protected admin dashboard",
+      "product CRUD",
+      "category management",
+      "banner management",
+      "inventory updates",
+      "order status control",
+      "customer visibility",
+      "analytics overview"
+    ]
+  },
+  "sampleSeedData": {
+    "adminUser": {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "role": "admin",
+      "full_name": "Main Admin",
+      "email": "admin@groceryglow.com",
+      "phone": "+10000000000",
+      "is_active": true
+    },
+    "categories": [
+      {
+        "name": "Fresh Fruits",
+        "slug": "fresh-fruits",
+        "is_featured": true
+      },
+      {
+        "name": "Vegetables",
+        "slug": "vegetables",
+        "is_featured": true
+      },
+      {
+        "name": "Dairy",
+        "slug": "dairy",
+        "is_featured": true
+      },
+      {
+        "name": "Bakery",
+        "slug": "bakery",
+        "is_featured": false
+      }
+    ],
+    "products": [
+      {
+        "name": "Organic Bananas",
+        "slug": "organic-bananas",
+        "category_slug": "fresh-fruits",
+        "price": 2.99,
+        "discount_price": 2.49,
+        "stock": 120,
+        "unit": "dozen",
+        "is_featured": true
+      },
+      {
+        "name": "Fresh Tomatoes",
+        "slug": "fresh-tomatoes",
+        "category_slug": "vegetables",
+        "price": 1.99,
+        "discount_price": 1.79,
+        "stock": 200,
+        "unit": "kg",
+        "is_featured": true
+      }
+    ]
+  },
+  "techPreferences": {
+    "language": "TypeScript across the entire project.",
+    "frontend": "React with Next.js App Router for pages, layouts, components, and client/server rendering where appropriate.",
+    "backend": "Next.js for backend capabilities using API routes or server actions, combined with Supabase Auth, PostgreSQL, and Supabase Storage.",
+    "stateManagement": "Use a clean approach suitable for cart, auth, wishlist, and product browsing state.",
+    "imageHandling": "Product and banner images should be stored in Supabase Storage.",
+    "recommendedStructure": {
+      "appRouter": true,
+      "styling": "Use a scalable styling approach suitable for a premium UI.",
+      "apiLayer": [
+        "Next.js route handlers for protected admin operations if needed",
+        "Supabase client on the frontend and server-side Supabase helpers or service-role usage only where appropriate"
+      ]
+    }
+  },
+  "claudeInstructions": {
+    "goal": "Generate a complete grocery application based on this JSON.",
+    "mustHave": [
+      "TypeScript across the full codebase",
+      "React frontend built with Next.js",
+      "One gorgeous landing page",
+      "One gorgeous responsive navbar",
+      "Customer and single-admin roles",
+      "Supabase Auth",
+      "Supabase PostgreSQL database integration",
+      "Admin-only dashboard and management pages",
+      "Responsive UI for desktop and mobile",
+      "Premium visual design rather than generic templates"
+    ],
+    "importantConstraints": [
+      "Use TypeScript for all components, utilities, Supabase code, and backend logic.",
+      "Use Next.js as the main framework for both frontend rendering and backend endpoints.",
+      "There must be exactly one admin account.",
+      "Customers can sign up normally, but admin cannot sign up publicly.",
+      "Use Supabase with a SQL schema matching the tables and fields defined above.",
+      "Preserve the premium landing page and navbar design quality."
+    ]
+  }
+}
