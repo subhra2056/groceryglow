@@ -37,7 +37,7 @@ export function useLoyaltyCoupon(user: User | null) {
       })
 
       if (couponError) {
-        console.error('[useLoyaltyCoupon] failed to insert coupon:', couponError)
+        // Silently skip — coupons table may not be set up yet
         return
       }
 
