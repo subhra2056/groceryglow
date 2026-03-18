@@ -51,6 +51,12 @@ function AccountContent() {
   const [savingProfile, setSavingProfile] = useState(false)
   const [profileError, setProfileError] = useState<string | null>(null)
 
+  // Delete account state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deletingAccount, setDeletingAccount] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
   useEffect(() => {
     if (!user) return
     if (activeTab === 'orders') loadOrders()
@@ -138,6 +144,21 @@ function AccountContent() {
   }
 
   const handleSignOut = async () => {
+    await signOut()
+    router.push('/')
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== 'DELETE') return
+    setDeletingAccount(true)
+    setDeleteError('')
+    const res = await fetch('/api/delete-account', { method: 'DELETE' })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setDeleteError(body.error ?? 'Failed to delete account. Please try again.')
+      setDeletingAccount(false)
+      return
+    }
     await signOut()
     router.push('/')
   }
@@ -264,10 +285,70 @@ function AccountContent() {
                     ))}
                   </div>
 
-                  <div className="mt-6 pt-5 border-t border-gray-100">
+                  <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
                     <p className="text-xs text-gray-400">
                       Member since {profile?.created_at ? formatDate(profile.created_at) : '—'}
                     </p>
+                  </div>
+
+                  {/* Danger Zone */}
+                  <div className="mt-6 rounded-2xl border border-red-100 bg-red-50/40 p-5">
+                    <h3 className="text-sm font-semibold text-red-600 mb-1">Danger Zone</h3>
+                    <p className="text-xs text-gray-500 mb-4">
+                      Permanently delete your account and all associated data. This cannot be undone.
+                    </p>
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-red-200 text-red-500 text-sm font-medium rounded-xl hover:bg-red-50 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" /> Delete My Account
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Delete account confirmation modal */}
+              {showDeleteConfirm && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+                    <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Trash2 className="w-7 h-7 text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-900 text-center mb-2">Delete Account?</h2>
+                    <p className="text-gray-500 text-sm text-center leading-relaxed mb-4">
+                      This will permanently erase your profile, orders, wishlist, reviews, and all other data. <strong className="text-gray-700">There is no way to recover your account.</strong>
+                    </p>
+                    <p className="text-xs text-gray-400 text-center mb-5">
+                      Type <span className="font-semibold text-red-500">DELETE</span> to confirm
+                    </p>
+                    <input
+                      value={deleteConfirmText}
+                      onChange={(e) => setDeleteConfirmText(e.target.value)}
+                      placeholder="Type DELETE here"
+                      className="input text-sm mb-4 text-center"
+                    />
+                    {deleteError && (
+                      <p className="text-xs text-red-500 text-center mb-3">{deleteError}</p>
+                    )}
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmText(''); setDeleteError('') }}
+                        className="flex-1 px-4 py-2.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleDeleteAccount}
+                        disabled={deleteConfirmText !== 'DELETE' || deletingAccount}
+                        className="flex-1 px-4 py-2.5 text-sm text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {deletingAccount ? (
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <><Trash2 className="w-4 h-4" /> Delete Forever</>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}

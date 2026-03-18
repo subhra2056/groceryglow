@@ -71,6 +71,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [supabase, fetchProfile])
 
+  // Force logout if admin blocks the currently logged-in user
+  useEffect(() => {
+    if (!user) return
+
+    const channel = supabase
+      .channel(`profile-block:${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${user.id}`,
+        },
+        async (payload) => {
+          const updated = payload.new as { is_active: boolean }
+          if (updated.is_active === false) {
+            await supabase.auth.signOut()
+            setUser(null)
+            setProfile(null)
+            window.location.href = '/auth/signin?blocked=1'
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user, supabase])
+
   const signUp = async (
     email: string,
     password: string,
@@ -106,9 +137,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) return { error: error.message }
 
-    // Update last_login_at
     const { data: authData } = await supabase.auth.getUser()
     if (authData.user) {
+      // Check if account is blocked
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('is_active')
+        .eq('id', authData.user.id)
+        .single()
+
+      if (profileData?.is_active === false) {
+        await supabase.auth.signOut()
+        return { error: 'ACCOUNT_BLOCKED' }
+      }
+
       await supabase
         .from('profiles')
         .update({ last_login_at: new Date().toISOString() })

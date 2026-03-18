@@ -55,7 +55,7 @@ export default function ProductDetailPage() {
   const [reviewSuccess, setReviewSuccess] = useState('')
 
   const { addItem } = useCart()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
 
   useEffect(() => {
     if (!productId) return
@@ -155,7 +155,7 @@ export default function ProductDetailPage() {
       await supabase.from('reviews').insert({
         product_id: product.id,
         user_id: user.id,
-        user_name: user.email?.split('@')[0] ?? 'Anonymous',
+        user_name: profile?.full_name ?? user.email?.split('@')[0] ?? 'Anonymous',
         rating: reviewRating,
         comment: reviewText.trim(),
       })

@@ -2,11 +2,11 @@
 // GroceryGlow — Utility Helpers
 // ─────────────────────────────────────────────
 
-/** Format a number as USD currency string */
+/** Format a number as INR currency string */
 export function formatPrice(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     minimumFractionDigits: 2,
   }).format(amount)
 }

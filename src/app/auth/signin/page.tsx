@@ -4,8 +4,53 @@ export const dynamic = 'force-dynamic'
 import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Mail, Lock, Eye, EyeOff, Leaf } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Leaf, ShieldX, Copy, Check } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+
+const SUPPORT_EMAIL = 'support@groceryglow.com'
+
+function BlockedModal({ onClose }: { onClose: () => void }) {
+  const [copied, setCopied] = useState(false)
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(SUPPORT_EMAIL)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center animate-fade-up">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <ShieldX className="w-8 h-8 text-red-500" />
+        </div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Account Blocked</h2>
+        <p className="text-gray-500 text-sm leading-relaxed mb-5">
+          Your account has been temporarily suspended. Please contact our support team to resolve this.
+        </p>
+
+        {/* Support email box */}
+        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mb-4">
+          <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <span className="text-sm text-gray-700 flex-1 text-left">{SUPPORT_EMAIL}</span>
+          <button
+            onClick={copyEmail}
+            className="text-xs text-forest-green font-medium flex items-center gap-1 hover:text-green-700 transition-colors"
+          >
+            {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
+          </button>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full px-5 py-3 text-sm text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    </div>
+  )
+}
 
 function SignInContent() {
   const [email, setEmail] = useState('')
@@ -13,11 +58,12 @@ function SignInContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
   const { signIn } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') ?? '/'
+
+  const [blocked, setBlocked] = useState(() => searchParams.get('blocked') === '1')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,7 +72,11 @@ function SignInContent() {
 
     const { error: err } = await signIn(email, password)
     if (err) {
-      setError(err)
+      if (err === 'ACCOUNT_BLOCKED') {
+        setBlocked(true)
+      } else {
+        setError(err)
+      }
       setLoading(false)
       return
     }
@@ -36,6 +86,7 @@ function SignInContent() {
 
   return (
     <div className="min-h-screen bg-cream flex">
+      {blocked && <BlockedModal onClose={() => setBlocked(false)} />}
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-hero flex-col justify-between p-12">
         <Link href="/" className="flex items-center gap-2">
