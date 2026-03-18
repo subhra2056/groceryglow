@@ -351,27 +351,44 @@ export default function ProductDetailPage() {
 
               {/* Quantity + CTA */}
               {product.stock > 0 && (
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                <div className="flex flex-col gap-3">
+                  {/* Row 1: quantity + wishlist */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="p-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        <Minus className="w-4 h-4 text-gray-500" />
+                      </button>
+                      <span className="w-10 text-center text-sm font-semibold">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                        className="p-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-gray-500" />
+                      </button>
+                    </div>
+
                     <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="p-2.5 hover:bg-gray-50 transition-colors"
-                    >
-                      <Minus className="w-4 h-4 text-gray-500" />
-                    </button>
-                    <span className="w-10 text-center text-sm font-semibold">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                      className="p-2.5 hover:bg-gray-50 transition-colors"
-                    >
-                      <Plus className="w-4 h-4 text-gray-500" />
+                      onClick={handleWishlistToggle}
+                      className={cn(
+                        'p-2.5 rounded-xl border-2 transition-all hover:scale-110',
+                        wishlisted
+                          ? 'border-red-300 bg-red-50 text-red-400'
+                          : 'border-gray-200 text-gray-400 hover:border-red-200'
+                      )}
+                      aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart className={cn('w-4 h-4', wishlisted && 'fill-current')} />
                     </button>
                   </div>
 
+                  {/* Row 2: Add to Cart full width */}
                   <button
                     onClick={handleAddToCart}
                     disabled={addingToCart}
-                    className="btn-secondary flex-1 md:flex-none"
+                    className="btn-secondary w-full py-3 text-sm"
                   >
                     {addingToCart ? (
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -379,19 +396,6 @@ export default function ProductDetailPage() {
                       <ShoppingCart className="w-4 h-4" />
                     )}
                     Add to Cart
-                  </button>
-
-                  <button
-                    onClick={handleWishlistToggle}
-                    className={cn(
-                      'p-3 rounded-xl border-2 transition-all hover:scale-110',
-                      wishlisted
-                        ? 'border-red-300 bg-red-50 text-red-400'
-                        : 'border-gray-200 text-gray-400 hover:border-red-200'
-                    )}
-                    aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                  >
-                    <Heart className={cn('w-5 h-5', wishlisted && 'fill-current')} />
                   </button>
                 </div>
               )}
