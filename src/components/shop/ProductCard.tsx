@@ -76,20 +76,20 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
   }
 
   return (
-    <div className="card group">
+    <div className="card group flex flex-col h-full">
       {/* ── Image ── */}
-      <div className="relative bg-gray-50 h-36 sm:h-40 md:h-44 flex items-center justify-center overflow-hidden">
+      <div className="relative bg-gray-50 h-28 sm:h-36 flex items-center justify-center overflow-hidden flex-shrink-0 rounded-t-2xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={productImage(product.images)}
           alt={product.name}
           className={cn(
-            'h-24 w-24 sm:h-32 sm:w-32 md:h-36 md:w-36 object-contain transition-transform duration-500',
+            'h-20 w-20 sm:h-24 sm:w-24 object-contain transition-transform duration-500',
             !outOfStock && 'group-hover:scale-110'
           )}
         />
 
-        {/* Badges */}
+        {/* Badges — top left */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {hasDiscount && (
             <span className="badge-orange text-[10px]">
@@ -102,80 +102,75 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
           )}
         </div>
 
-        {/* Wishlist button */}
+        {/* Wishlist — top right */}
         <button
           onClick={handleWishlistToggle}
           disabled={togglingWishlist}
           className={cn(
             'absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm transition-all hover:scale-110',
             'opacity-100 sm:opacity-0 sm:group-hover:opacity-100',
-            localWishlisted && 'opacity-100 text-red-400'
+            localWishlisted && '!opacity-100'
           )}
           aria-label={localWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <Heart className={cn('w-3.5 h-3.5', localWishlisted ? 'fill-current text-red-400' : 'text-gray-400')} />
+          <Heart className={cn('w-3.5 h-3.5', localWishlisted ? 'fill-red-400 text-red-400' : 'text-gray-400')} />
         </button>
       </div>
 
       {/* ── Info ── */}
-      <div className="p-3 sm:p-4">
-        {product.category && (
-          <p className="text-[9px] uppercase tracking-widest text-gray-400 mb-1 font-medium">{product.category.name}</p>
-        )}
+      <div className="p-2.5 sm:p-3 flex flex-col flex-1">
+        {/* Category */}
+        <p className="text-[9px] uppercase tracking-widest text-gray-400 font-medium truncate">
+          {product.category?.name ?? ''}
+        </p>
 
+        {/* Name — 2-line clamp, fixed min-height keeps rows aligned */}
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug tracking-tight">
+          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug mt-0.5 min-h-[2rem] sm:min-h-[2.5rem]">
             {product.name}
           </h3>
         </Link>
 
-        {product.review_count > 0 && (
-          <div className="flex items-center gap-0.5 mt-1">
-            <Star className="w-2.5 h-2.5 text-yellow-400 fill-current" />
-            <span className="text-[10px] text-gray-400 font-medium">
-              {product.rating_average.toFixed(1)}
-            </span>
-          </div>
-        )}
+        {/* Rating — fixed height so cards align even with no reviews */}
+        <div className="flex items-center gap-0.5 mt-1 h-3.5">
+          {product.review_count > 0 && (
+            <>
+              <Star className="w-2.5 h-2.5 text-yellow-400 fill-current flex-shrink-0" />
+              <span className="text-[10px] text-gray-400 font-medium leading-none">
+                {product.rating_average.toFixed(1)}
+              </span>
+            </>
+          )}
+        </div>
 
-        {/* Price + Quantity controls */}
-        <div className="flex items-end justify-between mt-2 sm:mt-3 gap-1">
+        {/* Price + ADD — pinned to bottom */}
+        <div className="flex items-center justify-between mt-auto pt-2 gap-1">
           <div className="min-w-0">
-            <div className="flex items-baseline gap-1 flex-wrap">
-              <span className="text-forest-green font-extrabold text-sm tracking-tight">{formatPrice(price)}</span>
-              {hasDiscount && (
-                <span className="text-gray-300 text-[10px] line-through">{formatPrice(product.price)}</span>
-              )}
-            </div>
+            <span className="text-forest-green font-extrabold text-sm leading-none">{formatPrice(price)}</span>
+            {hasDiscount && (
+              <span className="text-gray-300 text-[10px] line-through ml-1">{formatPrice(product.price)}</span>
+            )}
           </div>
 
-          {/* Blinkit-style quantity control */}
-          {outOfStock ? (
-            <span className="text-[10px] text-gray-400 font-medium">Out of stock</span>
-          ) : quantity === 0 ? (
-            <button
-              onClick={handleAdd}
-              className="flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 h-7 sm:h-8 bg-forest-green text-white text-[11px] sm:text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition-all flex-shrink-0"
-            >
-              <Plus className="w-3 h-3" /> ADD
-            </button>
-          ) : (
-            <div className="flex items-center bg-forest-green rounded-lg overflow-hidden flex-shrink-0 h-7 sm:h-8">
+          {!outOfStock && (
+            quantity === 0 ? (
               <button
-                onClick={handleDecrease}
-                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
+                onClick={handleAdd}
+                className="flex items-center gap-0.5 px-2.5 h-7 bg-forest-green text-white text-[11px] font-bold rounded-lg hover:bg-green-700 active:scale-95 transition-all flex-shrink-0"
               >
-                <Minus className="w-3 h-3" />
+                <Plus className="w-3 h-3" /> ADD
               </button>
-              <span className="w-5 sm:w-6 text-center text-white text-xs font-bold">{quantity}</span>
-              <button
-                onClick={handleIncrease}
-                disabled={quantity >= product.stock}
-                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Plus className="w-3 h-3" />
-              </button>
-            </div>
+            ) : (
+              <div className="flex items-center bg-forest-green rounded-lg overflow-hidden flex-shrink-0 h-7">
+                <button onClick={handleDecrease} className="w-7 h-7 flex items-center justify-center text-white hover:bg-green-700 transition-colors">
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-5 text-center text-white text-xs font-bold">{quantity}</span>
+                <button onClick={handleIncrease} disabled={quantity >= product.stock} className="w-7 h-7 flex items-center justify-center text-white hover:bg-green-700 transition-colors disabled:opacity-40">
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+            )
           )}
         </div>
       </div>

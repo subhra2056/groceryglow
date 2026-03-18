@@ -36,6 +36,7 @@ function ShopContent() {
 
   const [filters, setFilters] = useState<FilterState>({
     category: searchParams.get('category') ?? '',
+    priceEnabled: false,
     minPrice: 0,
     maxPrice: 100,
     onlyOrganic: false,
@@ -58,7 +59,7 @@ function ShopContent() {
     setFilters({
       category: searchParams.get('category') ?? '',
       minPrice: 0,
-      maxPrice: 100,
+      maxPrice: 1000,
       onlyOrganic: false,
       onlyFeatured: false,
       sortBy: 'default',
@@ -110,8 +111,11 @@ function ShopContent() {
     const tag = searchParams.get('tag')
     if (tag) query = query.contains('tags', [tag])
 
-    // Price range
-    query = query.gte('price', filters.minPrice).lte('price', filters.maxPrice)
+    // Price range — only apply when user has explicitly enabled it
+    if (filters.priceEnabled) {
+      if (filters.minPrice > 0) query = query.gte('price', filters.minPrice)
+      query = query.lte('price', filters.maxPrice)
+    }
 
     // Type filters
     if (filters.onlyOrganic) query = query.eq('is_organic', true)

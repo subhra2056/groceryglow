@@ -8,6 +8,7 @@ import type { Category } from '@/types'
 
 export interface FilterState {
   category: string
+  priceEnabled: boolean
   minPrice: number
   maxPrice: number
   onlyOrganic: boolean
@@ -50,11 +51,11 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
     filters.onlyOrganic,
     filters.onlyFeatured,
     filters.minPrice > 0,
-    filters.maxPrice < 100,
+    filters.priceEnabled,
   ].filter(Boolean).length
 
   const clearAll = () =>
-    onChange({ category: '', minPrice: 0, maxPrice: 100, onlyOrganic: false, onlyFeatured: false, sortBy: 'default' })
+    onChange({ category: '', priceEnabled: false, minPrice: 0, maxPrice: 100, onlyOrganic: false, onlyFeatured: false, sortBy: 'default' })
 
   const FilterContent = () => (
     <div className="space-y-6">
@@ -117,11 +118,19 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
 
       {/* Price range */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-          Price Range
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
+        <label className="flex items-center gap-2 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={filters.priceEnabled}
+            onChange={(e) => update({ priceEnabled: e.target.checked })}
+            className="w-4 h-4 accent-forest-green rounded"
+          />
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Filter by Price
+          </h3>
+        </label>
+        {filters.priceEnabled && (
+          <div className="mt-3 flex items-center gap-2">
             <div className="flex-1">
               <label className="text-xs text-gray-400 mb-1 block">Min (₹)</label>
               <input
@@ -139,14 +148,14 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
               <input
                 type="number"
                 min={filters.minPrice + 1}
-                max={200}
+                max={100}
                 value={filters.maxPrice}
                 onChange={(e) => update({ maxPrice: Number(e.target.value) })}
                 className="input text-xs py-2"
               />
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Checkboxes */}

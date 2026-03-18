@@ -186,6 +186,22 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- Functions & Triggers
 -- ================================================================
 
+-- Deletes a user's data safely — SECURITY DEFINER runs as DB owner, bypassing GRANT restrictions.
+-- Called from /api/delete-account route. Deletes orders (→ order_items) then profile (→ cascades).
+CREATE OR REPLACE FUNCTION delete_user_account(target_user_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  DELETE FROM orders  WHERE user_id = target_user_id;
+  DELETE FROM profiles WHERE id    = target_user_id;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION delete_user_account TO authenticated;
+
 CREATE OR REPLACE FUNCTION prevent_multiple_admins()
 RETURNS TRIGGER AS $$
 BEGIN

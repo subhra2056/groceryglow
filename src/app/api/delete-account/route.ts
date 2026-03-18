@@ -34,12 +34,18 @@ export async function DELETE() {
     { auth: { autoRefreshToken: false, persistSession: false } }
   )
 
-  // Delete profile row first (cascades related data)
-  await adminClient.from('profiles').delete().eq('id', user.id)
+  // 1. Call SECURITY DEFINER function — runs as DB owner, bypasses all GRANT/RLS restrictions.
+  //    Deletes orders (→ cascades order_items) then profile (→ cascades carts, wishlists, etc.)
+  const { error: rpcErr } = await supabase.rpc('delete_user_account', { target_user_id: user.id })
+  if (rpcErr) {
+    console.error('[delete-account] rpc failed:', rpcErr)
+    return NextResponse.json({ error: rpcErr.message }, { status: 500 })
+  }
 
-  // Delete auth user
+  // 2. Delete auth user (requires service role)
   const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id)
   if (deleteError) {
+    console.error('[delete-account] auth user delete failed:', deleteError)
     return NextResponse.json({ error: deleteError.message }, { status: 500 })
   }
 

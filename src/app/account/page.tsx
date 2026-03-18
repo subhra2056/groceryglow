@@ -15,6 +15,10 @@ import {
   X,
   Package,
   Trash2,
+  KeyRound,
+  Eye,
+  EyeOff,
+  ChevronDown,
 } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
@@ -50,6 +54,14 @@ function AccountContent() {
   const [editForm, setEditForm] = useState({ full_name: '', phone: '' })
   const [savingProfile, setSavingProfile] = useState(false)
   const [profileError, setProfileError] = useState<string | null>(null)
+
+  // Change password state
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [pwForm, setPwForm] = useState({ current: '', next: '', confirm: '' })
+  const [pwShow, setPwShow] = useState({ current: false, next: false, confirm: false })
+  const [pwLoading, setPwLoading] = useState(false)
+  const [pwError, setPwError] = useState<string | null>(null)
+  const [pwSuccess, setPwSuccess] = useState(false)
 
   // Delete account state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -148,6 +160,26 @@ function AccountContent() {
     router.push('/')
   }
 
+  const handleChangePassword = async () => {
+    setPwError(null)
+    if (pwForm.next.length < 8) { setPwError('New password must be at least 8 characters.'); return }
+    if (pwForm.next !== pwForm.confirm) { setPwError('Passwords do not match.'); return }
+    setPwLoading(true)
+    const supabase = createClient()
+    // Verify current password by re-signing in
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email: profile!.email,
+      password: pwForm.current,
+    })
+    if (signInErr) { setPwError('Current password is incorrect.'); setPwLoading(false); return }
+    const { error } = await supabase.auth.updateUser({ password: pwForm.next })
+    if (error) { setPwError(error.message); setPwLoading(false); return }
+    setPwSuccess(true)
+    setPwForm({ current: '', next: '', confirm: '' })
+    setPwLoading(false)
+    setTimeout(() => { setPwSuccess(false); setShowChangePassword(false) }, 2000)
+  }
+
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'DELETE') return
     setDeletingAccount(true)
@@ -212,12 +244,6 @@ function AccountContent() {
                 {label}
               </button>
             ))}
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-red-500 hover:bg-red-50 whitespace-nowrap flex-shrink-0 ml-auto transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" /> Sign Out
-            </button>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6">
@@ -338,6 +364,61 @@ function AccountContent() {
                         Member since {profile?.created_at ? formatDate(profile.created_at) : '—'}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Change Password */}
+                  <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <button
+                      onClick={() => { setShowChangePassword((v) => !v); setPwError(null); setPwSuccess(false) }}
+                      className="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-charcoal hover:bg-gray-50 transition-colors"
+                    >
+                      <span className="flex items-center gap-2.5"><KeyRound className="w-4 h-4 text-forest-green" /> Change Password</span>
+                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showChangePassword ? 'rotate-180' : ''}`} />
+                    </button>
+                    {showChangePassword && (
+                      <div className="px-5 pb-5 space-y-3 border-t border-gray-100 pt-4">
+                        {pwSuccess && (
+                          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-4 py-3">
+                            Password updated successfully!
+                          </div>
+                        )}
+                        {pwError && (
+                          <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+                            {pwError}
+                          </div>
+                        )}
+                        {(['current', 'next', 'confirm'] as const).map((field) => (
+                          <div key={field}>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                              {field === 'current' ? 'Current Password' : field === 'next' ? 'New Password' : 'Confirm New Password'}
+                            </p>
+                            <div className="relative">
+                              <input
+                                type={pwShow[field] ? 'text' : 'password'}
+                                value={pwForm[field]}
+                                onChange={(e) => setPwForm((f) => ({ ...f, [field]: e.target.value }))}
+                                className="input text-sm pr-10"
+                                placeholder={field === 'current' ? 'Enter current password' : field === 'next' ? 'Min. 8 characters' : 'Re-enter new password'}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setPwShow((s) => ({ ...s, [field]: !s[field] }))}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              >
+                                {pwShow[field] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={handleChangePassword}
+                          disabled={pwLoading || !pwForm.current || !pwForm.next || !pwForm.confirm}
+                          className="btn-secondary text-sm py-2 w-full justify-center mt-1"
+                        >
+                          {pwLoading ? 'Updating…' : 'Update Password'}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Danger Zone */}

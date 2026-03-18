@@ -8,7 +8,6 @@ import {
   Heart,
   Search,
   User,
-  Menu,
   X,
   ChevronDown,
   LayoutDashboard,
@@ -309,13 +308,15 @@ function NavbarContent() {
                         )}
 
                         <div className="border-t border-gray-100 mt-1 pt-1">
-                          <button
-                            onClick={() => { setProfileOpen(false); setBugReportOpen(true) }}
-                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors"
-                          >
-                            <Bug className="w-4 h-4" />
-                            Report a Bug
-                          </button>
+                          {!isAdmin && (
+                            <button
+                              onClick={() => { setProfileOpen(false); setBugReportOpen(true) }}
+                              className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors"
+                            >
+                              <Bug className="w-4 h-4" />
+                              Report a Bug
+                            </button>
+                          )}
                           <button
                             onClick={handleSignOut}
                             className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
@@ -339,14 +340,6 @@ function NavbarContent() {
                 </div>
               )}
 
-              {/* Hamburger — desktop only (mobile uses bottom nav) */}
-              <button
-                onClick={() => setMobileOpen((v) => !v)}
-                className="hidden md:flex p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
-                aria-label="Toggle menu"
-              >
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
             </div>
           </div>
         </div>
@@ -601,15 +594,17 @@ function NavbarContent() {
           </nav>
 
           {/* Drawer footer */}
-          <div className="border-t border-gray-100 p-4 space-y-2">
+          <div className="border-t border-gray-100 px-4 pt-4 pb-[76px] space-y-2">
             {user ? (
               <>
-                <button
-                  onClick={() => { setMobileOpen(false); setBugReportOpen(true) }}
-                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
-                >
-                  <Bug className="w-4 h-4 text-red-400" /> Report a Bug
-                </button>
+                {!isAdmin && (
+                  <button
+                    onClick={() => { setMobileOpen(false); setBugReportOpen(true) }}
+                    className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                  >
+                    <Bug className="w-4 h-4 text-red-400" /> Report a Bug
+                  </button>
+                )}
                 <button
                   onClick={() => { handleSignOut(); setMobileOpen(false) }}
                   className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors"

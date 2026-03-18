@@ -48,9 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, fetchProfile])
 
   useEffect(() => {
-    // Get initial session — if refresh token is stale, sign out cleanly
+    // Get initial session — if refresh token is stale or network fails, sign out cleanly
     supabase.auth.getUser().then(({ data: { user }, error }) => {
-      if (error?.message?.includes('Refresh Token')) {
+      if (error) {
         supabase.auth.signOut()
         setLoading(false)
         return
@@ -58,6 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user)
       if (user) fetchProfile(user.id).finally(() => setLoading(false))
       else setLoading(false)
+    }).catch(() => {
+      setLoading(false)
     })
 
     // Listen for auth state changes
