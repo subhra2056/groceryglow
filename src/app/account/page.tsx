@@ -190,7 +190,7 @@ function AccountContent() {
 
         <div className="container-app mt-6 sm:mt-8">
           {/* ── Mobile horizontal tab bar ── */}
-          <div className="md:hidden bg-white rounded-2xl p-2 shadow-sm flex gap-1 overflow-x-auto mb-4 scrollbar-hide">
+          <div className="md:hidden bg-white rounded-2xl p-2 pr-3 shadow-sm flex gap-1 overflow-x-auto mb-4 scrollbar-hide">
             {tabs.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -201,13 +201,15 @@ function AccountContent() {
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <div className="relative flex-shrink-0">
+                  <Icon className="w-3.5 h-3.5" />
+                  {id === 'notifications' && unreadCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
+                </div>
                 {label}
-                {id === 'notifications' && unreadCount > 0 && (
-                  <span className="w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                    {unreadCount}
-                  </span>
-                )}
               </button>
             ))}
             <button

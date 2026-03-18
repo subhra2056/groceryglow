@@ -11,23 +11,16 @@ export default function Hero() {
       <div className="animate-blob absolute bottom-1/3 right-1/4 w-48 h-48 bg-sunset-orange/10 blur-2xl" style={{animationDelay: '3.5s'}} />
 
       {/* ── Floating produce — background layer ── */}
-      {/* Top-left cluster */}
       <span className="animate-drift absolute top-[8%] left-[4%] text-5xl opacity-15 select-none pointer-events-none" style={{animationDelay: '0s'}}>🍎</span>
       <span className="animate-float-slow absolute top-[18%] left-[12%] text-3xl opacity-10 select-none pointer-events-none" style={{animationDelay: '1.2s'}}>🌿</span>
       <span className="animate-float-reverse absolute top-[6%] left-[22%] text-4xl opacity-12 select-none pointer-events-none" style={{animationDelay: '2s'}}>🍋</span>
-
-      {/* Top-right cluster */}
       <span className="animate-drift absolute top-[5%] right-[18%] text-4xl opacity-10 select-none pointer-events-none" style={{animationDelay: '0.8s'}}>🥦</span>
       <span className="animate-float-fast absolute top-[14%] right-[6%] text-3xl opacity-15 select-none pointer-events-none" style={{animationDelay: '1.5s'}}>🍇</span>
       <span className="animate-float-slow absolute top-[30%] right-[3%] text-5xl opacity-10 select-none pointer-events-none" style={{animationDelay: '3s'}}>🥕</span>
-
-      {/* Bottom cluster */}
       <span className="animate-float absolute bottom-[20%] left-[6%] text-4xl opacity-12 select-none pointer-events-none" style={{animationDelay: '0.5s'}}>🍓</span>
       <span className="animate-drift absolute bottom-[12%] left-[18%] text-3xl opacity-10 select-none pointer-events-none" style={{animationDelay: '2.2s'}}>🫐</span>
       <span className="animate-float-reverse absolute bottom-[8%] right-[12%] text-4xl opacity-12 select-none pointer-events-none" style={{animationDelay: '1.8s'}}>🍊</span>
       <span className="animate-float-slow absolute bottom-[25%] right-[22%] text-3xl opacity-8 select-none pointer-events-none" style={{animationDelay: '4s'}}>🥝</span>
-
-      {/* Mid scattered */}
       <span className="animate-drift absolute top-[50%] left-[2%] text-3xl opacity-10 select-none pointer-events-none" style={{animationDelay: '3.2s'}}>🌽</span>
       <span className="animate-float absolute top-[45%] right-[15%] text-2xl opacity-8 select-none pointer-events-none" style={{animationDelay: '2.8s'}}>🍑</span>
 
@@ -54,13 +47,13 @@ export default function Hero() {
             </p>
 
             {/* CTAs */}
-            <div data-animate className="anim-d3 flex flex-wrap gap-3 pt-2">
-              <Link href="/shop" className="btn-primary text-base px-8 py-3.5 shadow-glow">
-                Shop Now <ArrowRight className="w-4 h-4" />
+            <div data-animate className="anim-d3 flex flex-col sm:flex-row gap-3 pt-2">
+              <Link href="/shop" className="btn-primary text-sm px-6 py-2.5 sm:text-base sm:px-8 sm:py-3.5 shadow-glow justify-center">
+                Shop Now <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Link>
               <Link
                 href="/shop?view=categories"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/15 border border-white/30 text-white font-medium text-base hover:bg-white/25 transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-full border border-white/30 bg-white/10 text-white font-medium text-sm hover:bg-white/20 transition-all duration-200 backdrop-blur-sm"
               >
                 Explore Categories
               </Link>
