@@ -158,7 +158,7 @@ function NavbarContent() {
                 <Leaf className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold text-forest-green tracking-tight">
-                Grocery<span className="text-sunset-orange">Glow</span>
+                Grocery<span className="font-serif italic text-sunset-orange font-normal">Glow</span>
               </span>
             </Link>
 
@@ -498,7 +498,7 @@ function NavbarContent() {
                 <Leaf className="w-4 h-4 text-white" />
               </div>
               <span className="text-lg font-bold text-forest-green">
-                Grocery<span className="text-sunset-orange">Glow</span>
+                Grocery<span className="font-serif italic text-sunset-orange font-normal">Glow</span>
               </span>
             </Link>
             <button

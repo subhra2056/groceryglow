@@ -322,13 +322,15 @@ function ShopContent() {
               {loading ? (
                 <SkeletonProductGrid />
               ) : products.length === 0 ? (
-                <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-                  <span className="text-5xl block mb-4">🔍</span>
-                  <h3 className="text-lg font-semibold text-charcoal mb-2">
+                <div className="bg-white rounded-2xl p-16 text-center shadow-sm flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-5">
+                    <SlidersHorizontal className="w-7 h-7 text-gray-300" />
+                  </div>
+                  <h3 className="font-serif text-xl text-charcoal mb-2" style={{fontWeight:400}}>
                     No products found
                   </h3>
-                  <p className="text-gray-400 text-sm">
-                    Try adjusting your filters or search query.
+                  <p className="text-gray-400 text-sm max-w-xs">
+                    Try adjusting your filters or search for something else.
                   </p>
                 </div>
               ) : (

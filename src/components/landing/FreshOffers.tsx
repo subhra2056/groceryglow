@@ -59,7 +59,7 @@ export default function FreshOffers() {
             <span className="inline-block bg-sunset-orange text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
               🔥 Hot Deal of the Week
             </span>
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-3">
+            <h3 className="font-serif text-2xl md:text-3xl lg:text-4xl leading-tight mb-3" style={{fontWeight:400}}>
               Get 30% Off Your First Order
             </h3>
             <p className="text-white/80 text-base mb-6">

@@ -133,12 +133,12 @@ export default function CartPage() {
         <div className="container-app mt-8">
           {items.length === 0 ? (
             /* Empty cart */
-            <div className="bg-white rounded-3xl p-12 text-center shadow-sm max-w-md mx-auto">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                <ShoppingCart className="w-10 h-10 text-gray-300" />
+            <div className="bg-white rounded-3xl p-16 text-center shadow-sm max-w-md mx-auto flex flex-col items-center">
+              <div className="w-20 h-20 bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                <ShoppingCart className="w-9 h-9 text-gray-300" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl font-bold text-charcoal mb-2">Your cart is empty</h2>
-              <p className="text-gray-400 text-sm mb-6">
+              <h2 className="font-serif text-2xl text-charcoal mb-2" style={{fontWeight:400}}>Your cart is empty</h2>
+              <p className="text-gray-400 text-sm mb-8 max-w-xs">
                 Looks like you haven&apos;t added anything yet. Start shopping!
               </p>
               <Link href="/shop" className="btn-primary">

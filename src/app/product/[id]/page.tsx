@@ -420,7 +420,7 @@ export default function ProductDetailPage() {
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Description */}
             <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-charcoal mb-4">Product Description</h2>
+              <h2 className="font-serif text-lg text-charcoal mb-4" style={{fontWeight:400}}>Product Description</h2>
               <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
                 {product.description ?? 'No description available for this product.'}
               </p>
@@ -428,7 +428,7 @@ export default function ProductDetailPage() {
 
             {/* Nutrition / Details */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-charcoal mb-4">Quick Details</h2>
+              <h2 className="font-serif text-lg text-charcoal mb-4" style={{fontWeight:400}}>Quick Details</h2>
               <div className="space-y-3">
                 {[
                   { label: 'Unit', value: product.unit ?? '—' },
@@ -447,7 +447,7 @@ export default function ProductDetailPage() {
 
           {/* Reviews */}
           <div className="mt-6 bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-charcoal mb-6">Customer Reviews ({reviews.length})</h2>
+            <h2 className="font-serif text-lg text-charcoal mb-6" style={{fontWeight:400}}>Customer Reviews ({reviews.length})</h2>
 
             {/* Success toast */}
             {reviewSuccess && (
@@ -559,7 +559,7 @@ export default function ProductDetailPage() {
           {/* Related products */}
           {related.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-xl font-bold text-charcoal mb-5">You Might Also Like</h2>
+              <h2 className="font-serif text-xl text-charcoal mb-5" style={{fontWeight:400}}>You Might Also Like</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {related.map((p) => (
                   <ProductCard key={p.id} product={p} />

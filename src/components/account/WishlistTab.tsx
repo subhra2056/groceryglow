@@ -16,14 +16,17 @@ interface WishlistTabProps {
 export default function WishlistTab({ wishlist, dataLoading, removeFromWishlist }: WishlistTabProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-charcoal mb-4">My Wishlist</h2>
+      <h2 className="font-serif text-xl text-charcoal mb-4" style={{fontWeight:400}}>My Wishlist</h2>
       {dataLoading ? (
         <SkeletonProductGrid />
       ) : wishlist.length === 0 ? (
-        <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
-          <Heart className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">Your wishlist is empty.</p>
-          <Link href="/shop" className="btn-primary mt-4 inline-flex">Discover Products</Link>
+        <div className="bg-white rounded-2xl p-16 text-center shadow-sm flex flex-col items-center">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-5">
+            <Heart className="w-7 h-7 text-red-200" strokeWidth={1.5} />
+          </div>
+          <h3 className="font-serif text-xl text-charcoal mb-2" style={{fontWeight:400}}>Nothing saved yet</h3>
+          <p className="text-gray-400 text-sm mb-6 max-w-xs">Tap the heart on any product to save it here.</p>
+          <Link href="/shop" className="btn-primary inline-flex">Discover Products</Link>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

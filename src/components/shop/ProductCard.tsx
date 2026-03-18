@@ -129,7 +129,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
 
         {/* Name — 2-line clamp, fixed min-height keeps rows aligned */}
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug mt-0.5 min-h-[2rem]">
+          <h3 className="font-serif text-sm sm:text-base text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug mt-0.5 min-h-[2rem]" style={{fontWeight:400}}>
             {product.name}
           </h3>
         </Link>
@@ -149,7 +149,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
         {/* Price + ADD — pinned to bottom */}
         <div className="flex items-center justify-between mt-2 gap-1">
           <div className="min-w-0">
-            <span className="text-forest-green font-extrabold text-sm leading-none">{formatPrice(price)}</span>
+            <span className="font-serif text-forest-green text-base leading-none" style={{fontWeight:400}}>{formatPrice(price)}</span>
             {hasDiscount && (
               <span className="text-gray-300 text-[10px] line-through ml-1">{formatPrice(product.price)}</span>
             )}

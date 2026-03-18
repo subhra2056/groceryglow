@@ -67,7 +67,7 @@ export default function WhyChooseUs() {
                 { value: '4.9★', label: 'Average Rating' },
               ].map((stat) => (
                 <div key={stat.label} className="bg-white rounded-xl p-4 text-center shadow-sm">
-                  <p className="text-2xl font-semibold text-forest-green">{stat.value}</p>
+                  <p className="font-serif text-2xl text-forest-green" style={{fontWeight:400}}>{stat.value}</p>
                   <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
                 </div>
               ))}
