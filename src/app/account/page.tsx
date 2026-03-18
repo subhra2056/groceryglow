@@ -408,16 +408,51 @@ function AccountContent() {
     <>
       <Navbar />
       <main className="min-h-screen bg-cream pb-16">
-        <div className="bg-gradient-hero py-10">
-          <div className="container-app text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
-                {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
+        {/* ── Fancy Profile Hero ── */}
+        <div className="bg-gradient-hero relative overflow-hidden py-8 sm:py-10">
+          {/* Decorative blobs */}
+          <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full pointer-events-none" />
+          <div className="absolute -bottom-8 -left-8 w-36 h-36 bg-white/5 rounded-full pointer-events-none" />
+          <div className="absolute top-4 right-1/3 w-20 h-20 bg-white/5 rounded-full pointer-events-none" />
+
+          <div className="container-app relative z-10">
+            <div className="flex items-center gap-4 sm:gap-5">
+              {/* Avatar with ring */}
+              <div className="relative flex-shrink-0">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center text-3xl sm:text-4xl font-black text-white shadow-lg">
+                  {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
+                </div>
+                <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full" />
               </div>
-              <div>
-                <h1 className="font-serif text-xl sm:text-2xl text-white" style={{fontWeight:400}}>{profile?.full_name ?? 'My Account'}</h1>
-                <p className="text-white/50 text-xs tracking-wide mt-0.5 capitalize">{profile?.role ?? 'customer'}</p>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <p className="text-white/60 text-xs font-medium tracking-wide">Welcome back 👋</p>
+                <h1 className="text-white font-bold text-2xl sm:text-3xl truncate mt-0.5">
+                  {profile?.full_name ?? 'My Account'}
+                </h1>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <span className="text-[11px] font-bold uppercase tracking-widest bg-white/20 text-white px-2.5 py-1 rounded-full">
+                    {profile?.role ?? 'customer'}
+                  </span>
+                  {profile?.email && (
+                    <span className="text-white/50 text-xs truncate max-w-[160px]">{profile.email}</span>
+                  )}
+                </div>
               </div>
+            </div>
+
+            {/* Stats strip */}
+            <div className="flex gap-3 mt-5">
+              {[
+                { label: 'Member since', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—' },
+                { label: 'Phone', value: profile?.phone ?? 'Not set' },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-3">
+                  <p className="text-white/50 text-[10px] font-semibold uppercase tracking-wider">{label}</p>
+                  <p className="text-white font-semibold text-xs sm:text-sm mt-0.5 truncate">{value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -489,29 +524,19 @@ function AccountContent() {
                 <div className="space-y-4">
                   {/* Profile card */}
                   <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    {/* Card header with avatar */}
-                    <div className="bg-gradient-to-r from-forest-green to-leaf-green px-5 py-6 flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
-                        {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-white font-semibold text-base truncate">{profile?.full_name ?? '—'}</p>
-                        <span className="inline-block mt-1.5 text-[10px] font-semibold uppercase tracking-wide bg-white/20 text-white px-2 py-0.5 rounded-full">
-                          {profile?.role ?? 'customer'}
-                        </span>
-                      </div>
-                      {!editing && (
-                        <button
-                          onClick={() => { setEditing(true); setProfileError(null) }}
-                          className="ml-auto flex-shrink-0 flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors"
-                        >
-                          <Edit3 className="w-3 h-3" /> Edit
-                        </button>
-                      )}
-                    </div>
-
                     {/* Fields */}
                     <div className="p-4 sm:p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="font-bold text-charcoal text-base">Personal Info</h2>
+                        {!editing && (
+                          <button
+                            onClick={() => { setEditing(true); setProfileError(null) }}
+                            className="flex items-center gap-1.5 text-xs font-semibold text-forest-green bg-forest-green/8 hover:bg-forest-green/15 px-3 py-1.5 rounded-xl transition-colors"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" /> Edit
+                          </button>
+                        )}
+                      </div>
                       {profileError && (
                         <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
                           {profileError}
