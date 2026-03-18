@@ -1,5 +1,5 @@
 import { Star } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 function Stars({ count }: { count: number }) {
   return (
@@ -22,12 +22,28 @@ const AVATAR_COLORS = [
 
 export default async function Testimonials() {
   const supabase = await createClient()
+  const service = createServiceClient()
 
   const { data: reviews } = await supabase
     .from('reviews')
     .select('*, product:products(name)')
     .order('created_at', { ascending: false })
     .limit(4)
+
+  // Fetch real full names via service client (bypasses RLS on profiles)
+  let profileNames: Record<string, string> = {}
+  if (reviews && reviews.length > 0) {
+    const userIds = [...new Set(reviews.map((r) => r.user_id).filter(Boolean))]
+    const { data: profiles } = await service
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', userIds)
+    if (profiles) {
+      profileNames = Object.fromEntries(
+        profiles.map((p) => [p.id, p.full_name]).filter(([, name]) => name)
+      )
+    }
+  }
 
   // Aggregate rating stats
   const { data: allRatings } = await supabase.from('reviews').select('rating')
@@ -73,7 +89,8 @@ export default async function Testimonials() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {reviews.map((review, i) => {
-            const initials = review.user_name
+            const displayName = profileNames[review.user_id] || review.user_name || 'Customer'
+            const initials = displayName
               .split(' ')
               .map((w: string) => w[0])
               .join('')
@@ -90,7 +107,7 @@ export default async function Testimonials() {
                     {initials}
                   </div>
                   <div>
-                    <p className="font-semibold text-charcoal text-sm">{review.user_name}</p>
+                    <p className="font-semibold text-charcoal text-sm">{displayName}</p>
                     {review.product && (
                       <p className="text-xs text-gray-400">{review.product.name}</p>
                     )}

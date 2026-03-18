@@ -182,7 +182,7 @@ function AccountContent() {
               </div>
               <div>
                 <h1 className="font-serif text-xl sm:text-2xl text-white" style={{fontWeight:400}}>{profile?.full_name ?? 'My Account'}</h1>
-                <p className="text-white/50 text-xs tracking-wide mt-0.5">{profile?.email}</p>
+                <p className="text-white/50 text-xs tracking-wide mt-0.5 capitalize">{profile?.role ?? 'customer'}</p>
               </div>
             </div>
           </div>
@@ -266,7 +266,6 @@ function AccountContent() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-white font-semibold text-base truncate">{profile?.full_name ?? '—'}</p>
-                        <p className="text-white/70 text-xs truncate mt-0.5">{profile?.email}</p>
                         <span className="inline-block mt-1.5 text-[10px] font-semibold uppercase tracking-wide bg-white/20 text-white px-2 py-0.5 rounded-full">
                           {profile?.role ?? 'customer'}
                         </span>

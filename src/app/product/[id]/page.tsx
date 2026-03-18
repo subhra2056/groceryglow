@@ -146,16 +146,29 @@ export default function ProductDetailPage() {
     setSubmittingReview(true)
     const supabase = createClient()
 
+    // Always fetch the freshest full_name so we never store a stale email prefix
+    let displayName = profile?.full_name
+    if (!displayName) {
+      const { data: freshProfile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single()
+      displayName = freshProfile?.full_name
+    }
+    const userName = displayName ?? user.email?.split('@')[0] ?? 'Anonymous'
+
     if (existingReview) {
       await supabase.from('reviews').update({
         rating: reviewRating,
         comment: reviewText.trim(),
+        user_name: userName,
       }).eq('id', existingReview.id)
     } else {
       await supabase.from('reviews').insert({
         product_id: product.id,
         user_id: user.id,
-        user_name: profile?.full_name ?? user.email?.split('@')[0] ?? 'Anonymous',
+        user_name: userName,
         rating: reviewRating,
         comment: reviewText.trim(),
       })
