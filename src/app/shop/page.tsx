@@ -9,6 +9,7 @@ import Footer from '@/components/landing/Footer'
 import ProductCard from '@/components/shop/ProductCard'
 import ProductFilters, { type FilterState } from '@/components/shop/ProductFilters'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import { SkeletonProductGrid } from '@/components/ui/Skeleton'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import type { Product, Category } from '@/types'
@@ -319,9 +320,7 @@ function ShopContent() {
 
             <div className="flex-1 min-w-0">
               {loading ? (
-                <div className="flex justify-center items-center py-24">
-                  <LoadingSpinner size="lg" />
-                </div>
+                <SkeletonProductGrid />
               ) : products.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
                   <span className="text-5xl block mb-4">🔍</span>
