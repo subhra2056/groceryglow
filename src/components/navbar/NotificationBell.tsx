@@ -93,32 +93,16 @@ export default function NotificationBell() {
       {open && (
         <div className="fixed left-3 right-3 top-[4.5rem] md:absolute md:left-auto md:right-0 md:top-auto md:w-80 md:mt-2 bg-white rounded-2xl shadow-card-hover border border-gray-100 z-50 overflow-hidden animate-slide-in">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-forest-green" />
-              <span className="font-semibold text-charcoal text-sm">Notifications</span>
-              {unreadCount > 0 && (
-                <span className="badge-green text-[10px]">{unreadCount} new</span>
-              )}
-            </div>
-            <div className="flex items-center gap-1">
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-forest-green transition-colors"
-                  title="Mark all as read"
-                >
-                  <CheckCheck className="w-3.5 h-3.5" />
-                </button>
-              )}
-              {notifications.length > 0 && (
-                <button
-                  onClick={clearAll}
-                  className="px-2 py-1 text-xs text-red-400 hover:bg-red-50 rounded-lg font-medium transition-colors"
-                >
-                  Clear all
-                </button>
-              )}
+          <div className="px-4 pt-3 pb-2 border-b border-gray-100">
+            {/* Row 1: title + close */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-forest-green" />
+                <span className="font-semibold text-charcoal text-sm">Notifications</span>
+                {unreadCount > 0 && (
+                  <span className="badge-green text-[10px]">{unreadCount} new</span>
+                )}
+              </div>
               <button
                 onClick={() => setOpen(false)}
                 className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
@@ -127,6 +111,25 @@ export default function NotificationBell() {
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
+            {/* Row 2: actions (only when there are notifications) */}
+            {notifications.length > 0 && (
+              <div className="flex items-center gap-3 mt-2">
+                {unreadCount > 0 && (
+                  <button
+                    onClick={markAllAsRead}
+                    className="flex items-center gap-1 text-xs text-forest-green font-medium hover:underline"
+                  >
+                    <CheckCheck className="w-3 h-3" /> Mark all read
+                  </button>
+                )}
+                <button
+                  onClick={clearAll}
+                  className="text-xs text-red-400 font-medium hover:underline ml-auto"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Notification list */}

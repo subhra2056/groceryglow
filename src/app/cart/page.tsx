@@ -1,19 +1,103 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Tag } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Ticket, ChevronDown, ChevronUp, CheckCircle2, X } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { useCart } from '@/contexts/CartContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { createClient } from '@/lib/supabase/client'
 import { formatPrice, effectivePrice, productImage } from '@/lib/utils'
+
+type AppliedCoupon = {
+  coupon_id: string
+  type: 'personal' | 'global'
+  discount_amount: number
+  min_order_amount: number
+  code: string
+}
 
 export default function CartPage() {
   const { items, subtotal, loading, removeItem, updateQuantity } = useCart()
+  const { user } = useAuth()
 
   const DELIVERY_FEE = subtotal >= 50 ? 0 : 4.99
-  const total = subtotal + DELIVERY_FEE
+
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(() => {
+    if (typeof window === 'undefined') return null
+    try { return JSON.parse(sessionStorage.getItem('cart_coupon') ?? 'null') } catch { return null }
+  })
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const [couponLoading, setCouponLoading] = useState(false)
+  const [showCouponPicker, setShowCouponPicker] = useState(false)
+  const [availableCoupons, setAvailableCoupons] = useState<{
+    id: string; code: string; discount_amount: number; min_order_amount: number; expires_at: string | null
+  }[]>([])
+  const [fetchingCoupons, setFetchingCoupons] = useState(false)
+
+  const appliedDiscount =
+    appliedCoupon && subtotal >= appliedCoupon.min_order_amount
+      ? appliedCoupon.discount_amount
+      : 0
+  const total = Math.max(0, subtotal + DELIVERY_FEE - appliedDiscount)
+
+  const handleApplyCoupon = async (codeOverride?: string) => {
+    const code = (codeOverride ?? couponCode).trim().toUpperCase()
+    if (!code) return
+    setCouponLoading(true)
+    setCouponError(null)
+    try {
+      const res = await fetch('/api/apply-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setAppliedCoupon(data)
+        sessionStorage.setItem('cart_coupon', JSON.stringify(data))
+        setCouponError(null)
+        setShowCouponPicker(false)
+      } else {
+        setCouponError(data.error ?? 'Invalid coupon code')
+      }
+    } catch {
+      setCouponError('Something went wrong. Please try again.')
+    } finally {
+      setCouponLoading(false)
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    sessionStorage.removeItem('cart_coupon')
+  }
+
+  const handleToggleCouponPicker = async () => {
+    if (showCouponPicker) { setShowCouponPicker(false); return }
+    setShowCouponPicker(true)
+    if (availableCoupons.length > 0 || !user) return
+    setFetchingCoupons(true)
+    try {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('coupons')
+        .select('id, code, discount_amount, min_order_amount, expires_at')
+        .eq('user_id', user.id)
+        .eq('is_used', false)
+        .eq('is_active', true)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+        .order('created_at', { ascending: false })
+      setAvailableCoupons(data ?? [])
+    } finally {
+      setFetchingCoupons(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -168,6 +252,12 @@ export default function CartPage() {
                         Add {formatPrice(50 - subtotal)} more for free delivery
                       </p>
                     )}
+                    {appliedDiscount > 0 && (
+                      <div className="flex justify-between text-green-600 font-medium">
+                        <span>Coupon ({appliedCoupon!.code})</span>
+                        <span>-{formatPrice(appliedDiscount)}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="border-t border-gray-100 mt-4 pt-4">
@@ -177,20 +267,107 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  {/* Coupon placeholder */}
-                  <div className="mt-4 flex gap-2">
-                    <div className="relative flex-1">
-                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="Coupon code"
-                        className="input pl-9 py-2 text-xs"
-                      />
+                  {/* ── Coupon Section ── */}
+                  {user && (
+                    <div className="mt-4">
+                      {appliedCoupon ? (
+                        <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-3 py-2.5">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-green-700 font-mono tracking-wide">{appliedCoupon.code}</p>
+                            <p className="text-xs text-green-600">₹{appliedCoupon.discount_amount} off applied!</p>
+                          </div>
+                          <button
+                            onClick={handleRemoveCoupon}
+                            className="p-1 text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex gap-2">
+                            <input
+                              value={couponCode}
+                              onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(null) }}
+                              onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
+                              placeholder="Coupon code"
+                              className="input flex-1 py-2 text-xs uppercase font-mono tracking-wide"
+                            />
+                            <button
+                              onClick={() => handleApplyCoupon()}
+                              disabled={couponLoading || !couponCode.trim()}
+                              className="px-4 py-2 bg-forest-green text-white text-xs font-semibold rounded-xl hover:bg-forest-green/90 transition-colors disabled:opacity-40 flex-shrink-0"
+                            >
+                              {couponLoading ? '...' : 'Apply'}
+                            </button>
+                          </div>
+                          {couponError && <p className="text-[11px] text-red-500 mt-1.5">{couponError}</p>}
+
+                          {/* View my coupons toggle */}
+                          <button
+                            onClick={handleToggleCouponPicker}
+                            className="mt-2 text-xs text-forest-green font-medium flex items-center gap-1 hover:underline"
+                          >
+                            <Ticket className="w-3.5 h-3.5" />
+                            {showCouponPicker ? 'Hide coupons' : 'View my coupons'}
+                            {showCouponPicker ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                          </button>
+
+                          {showCouponPicker && (
+                            <div className="mt-3 space-y-2 max-h-56 overflow-y-auto">
+                              {fetchingCoupons ? (
+                                <div className="flex justify-center py-4"><LoadingSpinner size="sm" /></div>
+                              ) : availableCoupons.length === 0 ? (
+                                <p className="text-xs text-gray-400 text-center py-3 bg-gray-50 rounded-xl">
+                                  No active coupons available
+                                </p>
+                              ) : (
+                                availableCoupons.map((c) => {
+                                  const eligible = subtotal >= c.min_order_amount
+                                  const shortfall = Math.ceil(c.min_order_amount - subtotal)
+                                  return (
+                                    <div
+                                      key={c.id}
+                                      className={`border-2 rounded-xl p-3 flex items-center gap-3 ${
+                                        eligible
+                                          ? 'border-forest-green/25 bg-green-50/60'
+                                          : 'border-gray-100 bg-gray-50/80'
+                                      }`}
+                                    >
+                                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${eligible ? 'bg-forest-green/10' : 'bg-gray-100'}`}>
+                                        <Ticket className={`w-3.5 h-3.5 ${eligible ? 'text-forest-green' : 'text-gray-400'}`} />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className={`text-xs font-bold font-mono tracking-wide ${eligible ? 'text-charcoal' : 'text-gray-400'}`}>{c.code}</p>
+                                        <p className={`text-[11px] mt-0.5 ${eligible ? 'text-gray-500' : 'text-gray-400'}`}>
+                                          ₹{c.discount_amount} off · min ₹{c.min_order_amount}
+                                        </p>
+                                        {!eligible && (
+                                          <p className="text-[10px] text-orange-500 font-medium mt-0.5">Add ₹{shortfall} more</p>
+                                        )}
+                                      </div>
+                                      {eligible ? (
+                                        <button
+                                          onClick={() => handleApplyCoupon(c.code)}
+                                          disabled={couponLoading}
+                                          className="text-[11px] bg-forest-green text-white px-2.5 py-1.5 rounded-lg font-semibold hover:bg-forest-green/90 transition-colors flex-shrink-0"
+                                        >
+                                          Apply
+                                        </button>
+                                      ) : (
+                                        <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-1 rounded-lg flex-shrink-0">Locked</span>
+                                      )}
+                                    </div>
+                                  )
+                                })
+                              )}
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
-                    <button className="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-medium rounded-xl hover:bg-gray-200 transition-colors">
-                      Apply
-                    </button>
-                  </div>
+                  )}
 
                   <Link
                     href="/checkout"
