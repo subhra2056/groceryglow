@@ -20,6 +20,7 @@ import {
   Home,
   Grid2X2,
   MoreHorizontal,
+  Ticket,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCart } from '@/contexts/CartContext'
@@ -304,6 +305,14 @@ function NavbarContent() {
                               <Heart className="w-4 h-4" />
                               Wishlist
                             </Link>
+                            <Link
+                              href="/account?tab=coupons"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-forest-green transition-colors"
+                            >
+                              <Ticket className="w-4 h-4" />
+                              My Coupons
+                            </Link>
                           </>
                         )}
 
@@ -560,6 +569,13 @@ function NavbarContent() {
                       className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
                       <Heart className="w-4 h-4" /> Wishlist
+                    </Link>
+                    <Link
+                      href="/account?tab=coupons"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      <Ticket className="w-4 h-4" /> My Coupons
                     </Link>
                   </>
                 ) : (

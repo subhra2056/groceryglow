@@ -20,6 +20,9 @@ import {
   Eye,
   EyeOff,
   ChevronDown,
+  Ticket,
+  Copy,
+  Check,
 } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
@@ -37,7 +40,18 @@ import {
 import type { Order, WishlistItem } from '@/types'
 import { useRouter } from 'next/navigation'
 
-type Tab = 'profile' | 'orders' | 'wishlist' | 'notifications'
+type Tab = 'profile' | 'orders' | 'wishlist' | 'notifications' | 'coupons'
+
+interface CouponRow {
+  id: string
+  code: string
+  discount_amount: number
+  min_order_amount: number
+  is_used: boolean
+  is_active: boolean
+  expires_at: string | null
+  created_at: string
+}
 
 function AccountContent() {
   const searchParams = useSearchParams()
@@ -48,7 +62,9 @@ function AccountContent() {
 
   const [orders, setOrders] = useState<Order[]>([])
   const [wishlist, setWishlist] = useState<WishlistItem[]>([])
+  const [coupons, setCoupons] = useState<CouponRow[]>([])
   const [dataLoading, setDataLoading] = useState(false)
+  const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   // Profile edit state
   const [editing, setEditing] = useState(false)
@@ -74,6 +90,7 @@ function AccountContent() {
     if (!user) return
     if (activeTab === 'orders') loadOrders()
     if (activeTab === 'wishlist') loadWishlist()
+    if (activeTab === 'coupons') loadCoupons()
   }, [activeTab, user])
 
   useEffect(() => {
@@ -102,6 +119,24 @@ function AccountContent() {
       .order('created_at', { ascending: false })
     setWishlist(data ?? [])
     setDataLoading(false)
+  }
+
+  const loadCoupons = async () => {
+    setDataLoading(true)
+    const supabase = createClient()
+    const { data } = await supabase
+      .from('coupons')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('created_at', { ascending: false })
+    setCoupons(data ?? [])
+    setDataLoading(false)
+  }
+
+  const copyCode = async (code: string) => {
+    await navigator.clipboard.writeText(code)
+    setCopiedCode(code)
+    setTimeout(() => setCopiedCode(null), 2000)
   }
 
   const removeFromWishlist = async (wishlistId: string) => {
@@ -200,6 +235,7 @@ function AccountContent() {
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'orders', label: 'Orders', icon: ClipboardList },
     { id: 'wishlist', label: 'Wishlist', icon: Heart },
+    { id: 'coupons', label: 'Coupons', icon: Ticket },
     { id: 'notifications', label: 'Alerts', icon: Bell },
   ]
 
@@ -579,6 +615,76 @@ function AccountContent() {
                           </div>
                         )
                       ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* COUPONS */}
+              {activeTab === 'coupons' && (
+                <div>
+                  <h2 className="text-lg font-bold text-charcoal mb-4">My Coupons</h2>
+                  {dataLoading ? (
+                    <div className="flex justify-center py-10"><LoadingSpinner /></div>
+                  ) : coupons.length === 0 ? (
+                    <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
+                      <Ticket className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                      <p className="text-gray-500 font-medium text-sm">No coupons yet</p>
+                      <p className="text-gray-400 text-xs mt-1">Loyalty coupons are issued every 5 days. New users get NEWBIE100.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {coupons.map((c) => {
+                        const expired = c.expires_at ? new Date(c.expires_at) < new Date() : false
+                        const status = c.is_used ? 'used' : expired ? 'expired' : 'active'
+                        return (
+                          <div
+                            key={c.id}
+                            className={`bg-white rounded-2xl shadow-sm border-2 overflow-hidden ${
+                              status === 'active' ? 'border-forest-green/20' : 'border-gray-100 opacity-60'
+                            }`}
+                          >
+                            {/* Dashed divider stripe (coupon aesthetic) */}
+                            <div className="flex">
+                              <div className={`w-2 ${status === 'active' ? 'bg-forest-green' : 'bg-gray-300'}`} />
+                              <div className="flex-1 p-4">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="font-mono font-bold text-base text-charcoal tracking-widest">{c.code}</span>
+                                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                                        status === 'active' ? 'bg-green-100 text-green-700' :
+                                        status === 'used' ? 'bg-gray-100 text-gray-500' :
+                                        'bg-red-50 text-red-400'
+                                      }`}>
+                                        {status === 'active' ? 'Active' : status === 'used' ? 'Used' : 'Expired'}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      ₹{c.discount_amount} off on orders above ₹{c.min_order_amount}
+                                    </p>
+                                    {c.expires_at && (
+                                      <p className="text-xs text-gray-400 mt-0.5">
+                                        {status === 'expired' ? 'Expired' : 'Valid till'}{' '}
+                                        {new Date(c.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                      </p>
+                                    )}
+                                  </div>
+                                  {status === 'active' && (
+                                    <button
+                                      onClick={() => copyCode(c.code)}
+                                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-forest-green/30 text-forest-green text-xs font-semibold hover:bg-forest-green/5 transition-colors flex-shrink-0"
+                                    >
+                                      {copiedCode === c.code ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                                      {copiedCode === c.code ? 'Copied!' : 'Copy'}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                 </div>

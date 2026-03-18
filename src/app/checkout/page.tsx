@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft } from 'lucide-react'
+import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft, Ticket, ChevronDown, ChevronUp } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -37,6 +37,11 @@ export default function CheckoutPage() {
   } | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
   const [couponLoading, setCouponLoading] = useState(false)
+  const [showCouponPicker, setShowCouponPicker] = useState(false)
+  const [availableCoupons, setAvailableCoupons] = useState<{
+    id: string; code: string; discount_amount: number; min_order_amount: number; expires_at: string | null
+  }[]>([])
+  const [fetchingCoupons, setFetchingCoupons] = useState(false)
 
   const DELIVERY_FEE = subtotal >= 50 ? 0 : 4.99
   const appliedDiscount =
@@ -60,20 +65,22 @@ export default function CheckoutPage() {
   const update = (field: keyof CheckoutFormData, value: string) =>
     setForm((f) => ({ ...f, [field]: value }))
 
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) return
+  const handleApplyCoupon = async (codeOverride?: string) => {
+    const code = (codeOverride ?? couponCode).trim().toUpperCase()
+    if (!code) return
     setCouponLoading(true)
     setCouponError(null)
     try {
       const res = await fetch('/api/apply-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponCode.trim().toUpperCase() }),
+        body: JSON.stringify({ code }),
       })
       const data = await res.json()
       if (res.ok) {
         setAppliedCoupon(data)
         setCouponError(null)
+        setShowCouponPicker(false)
       } else {
         setCouponError(data.error ?? 'Failed to apply coupon')
       }
@@ -81,6 +88,27 @@ export default function CheckoutPage() {
       setCouponError('Something went wrong. Please try again.')
     } finally {
       setCouponLoading(false)
+    }
+  }
+
+  const handleToggleCouponPicker = async () => {
+    if (showCouponPicker) { setShowCouponPicker(false); return }
+    setShowCouponPicker(true)
+    if (availableCoupons.length > 0) return
+    setFetchingCoupons(true)
+    try {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('coupons')
+        .select('id, code, discount_amount, min_order_amount, expires_at')
+        .eq('user_id', user!.id)
+        .eq('is_used', false)
+        .eq('is_active', true)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+        .order('created_at', { ascending: false })
+      setAvailableCoupons(data ?? [])
+    } finally {
+      setFetchingCoupons(false)
     }
   }
 
@@ -389,17 +417,19 @@ export default function CheckoutPage() {
 
                   {/* Coupon Code */}
                   <div className="mb-6">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Coupon Code</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <Ticket className="w-3.5 h-3.5" /> Coupon Code
+                    </p>
                     {appliedCoupon ? (
                       <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
                         <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-green-700">{appliedCoupon.code}</p>
+                          <p className="text-sm font-bold text-green-700 font-mono tracking-wide">{appliedCoupon.code}</p>
                           <p className="text-xs text-green-600">₹{appliedCoupon.discount_amount} off applied!</p>
                         </div>
                         <button
                           onClick={() => { setAppliedCoupon(null); setCouponCode('') }}
-                          className="text-xs text-gray-400 hover:text-red-500"
+                          className="text-xs text-gray-400 hover:text-red-500 font-medium"
                         >
                           Remove
                         </button>
@@ -410,11 +440,12 @@ export default function CheckoutPage() {
                           <input
                             value={couponCode}
                             onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(null) }}
+                            onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                             placeholder="Enter coupon code"
-                            className="input flex-1 text-sm uppercase"
+                            className="input flex-1 text-sm uppercase font-mono tracking-wide"
                           />
                           <button
-                            onClick={handleApplyCoupon}
+                            onClick={() => handleApplyCoupon()}
                             disabled={couponLoading || !couponCode.trim()}
                             className="btn-secondary text-sm py-2 px-4 flex-shrink-0"
                           >
@@ -422,6 +453,72 @@ export default function CheckoutPage() {
                           </button>
                         </div>
                         {couponError && <p className="text-xs text-red-500 mt-1.5">{couponError}</p>}
+
+                        {/* View available coupons toggle */}
+                        <button
+                          onClick={handleToggleCouponPicker}
+                          className="mt-2 text-xs text-forest-green font-medium flex items-center gap-1 hover:underline"
+                        >
+                          <Ticket className="w-3.5 h-3.5" />
+                          {showCouponPicker ? 'Hide coupons' : 'View my coupons'}
+                          {showCouponPicker ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                        </button>
+
+                        {showCouponPicker && (
+                          <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
+                            {fetchingCoupons ? (
+                              <div className="flex justify-center py-4"><LoadingSpinner size="sm" /></div>
+                            ) : availableCoupons.length === 0 ? (
+                              <p className="text-xs text-gray-400 text-center py-4 bg-gray-50 rounded-xl">
+                                No active coupons. Check your notifications for new codes!
+                              </p>
+                            ) : (
+                              availableCoupons.map((c) => {
+                                const eligible = subtotal >= c.min_order_amount
+                                const shortfall = Math.ceil(c.min_order_amount - subtotal)
+                                return (
+                                  <div
+                                    key={c.id}
+                                    className={`border-2 rounded-xl p-3 flex items-center gap-3 ${
+                                      eligible
+                                        ? 'border-forest-green/25 bg-green-50/60'
+                                        : 'border-gray-100 bg-gray-50/80'
+                                    }`}
+                                  >
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${eligible ? 'bg-forest-green/10' : 'bg-gray-100'}`}>
+                                      <Ticket className={`w-4 h-4 ${eligible ? 'text-forest-green' : 'text-gray-400'}`} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className={`text-sm font-bold font-mono tracking-wide ${eligible ? 'text-charcoal' : 'text-gray-400'}`}>{c.code}</p>
+                                      <p className={`text-xs mt-0.5 ${eligible ? 'text-gray-500' : 'text-gray-400'}`}>
+                                        ₹{c.discount_amount} off · min order ₹{c.min_order_amount}
+                                      </p>
+                                      {!eligible && (
+                                        <p className="text-[10px] text-orange-500 font-medium mt-0.5">Add ₹{shortfall} more to unlock</p>
+                                      )}
+                                      {eligible && c.expires_at && (
+                                        <p className="text-[10px] text-gray-400 mt-0.5">
+                                          Valid till {new Date(c.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {eligible ? (
+                                      <button
+                                        onClick={() => handleApplyCoupon(c.code)}
+                                        disabled={couponLoading}
+                                        className="text-xs bg-forest-green text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-forest-green/90 transition-colors flex-shrink-0"
+                                      >
+                                        Apply
+                                      </button>
+                                    ) : (
+                                      <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-1 rounded-lg flex-shrink-0">Locked</span>
+                                    )}
+                                  </div>
+                                )
+                              })
+                            )}
+                          </div>
+                        )}
                       </>
                     )}
                   </div>
