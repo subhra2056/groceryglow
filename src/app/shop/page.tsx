@@ -59,7 +59,8 @@ function ShopContent() {
     setFilters({
       category: searchParams.get('category') ?? '',
       minPrice: 0,
-      maxPrice: 1000,
+      maxPrice: 100,
+      priceEnabled: false,
       onlyOrganic: false,
       onlyFeatured: false,
       sortBy: 'default',
