@@ -440,3 +440,47 @@ CREATE OR REPLACE TRIGGER trg_deduct_stock_on_order
 AFTER INSERT ON order_items
 FOR EACH ROW
 EXECUTE FUNCTION deduct_product_stock();
+
+-- ================================================================
+-- Coupons (run this block separately if schema already applied)
+-- ================================================================
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code text NOT NULL,
+  user_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
+  discount_amount numeric(10,2) NOT NULL,
+  min_order_amount numeric(10,2) NOT NULL DEFAULT 0,
+  is_used boolean NOT NULL DEFAULT false,
+  is_active boolean NOT NULL DEFAULT true,
+  expires_at timestamptz,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS coupons_global_code_idx ON coupons (code) WHERE user_id IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS coupons_user_code_idx ON coupons (code, user_id) WHERE user_id IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS coupon_uses (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  coupon_id uuid REFERENCES coupons(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
+  order_id uuid REFERENCES orders(id) ON DELETE SET NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(coupon_id, user_id)
+);
+
+ALTER TABLE coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE coupon_uses ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "users_read_own_coupons" ON coupons FOR SELECT USING (user_id = auth.uid() OR user_id IS NULL);
+CREATE POLICY "users_update_own_coupons" ON coupons FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "service_insert_coupons" ON coupons FOR INSERT WITH CHECK (true);
+CREATE POLICY "users_read_own_uses" ON coupon_uses FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "users_insert_uses" ON coupon_uses FOR INSERT WITH CHECK (user_id = auth.uid());
+
+GRANT SELECT, INSERT, UPDATE ON coupons TO authenticated;
+GRANT SELECT, INSERT ON coupon_uses TO authenticated;
+
+-- Seed NEWBIE100 global coupon
+INSERT INTO coupons (code, user_id, discount_amount, min_order_amount, is_active)
+VALUES ('NEWBIE100', NULL, 100.00, 400.00, true)
+ON CONFLICT DO NOTHING;

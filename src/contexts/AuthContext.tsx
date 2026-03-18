@@ -11,6 +11,7 @@ import {
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile } from '@/types'
+import { useLoyaltyCoupon } from '@/hooks/useLoyaltyCoupon'
 
 interface AuthContextValue {
   user: User | null
@@ -30,6 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+
+  useLoyaltyCoupon(user)
 
   const fetchProfile = useCallback(
     async (userId: string) => {
@@ -138,6 +141,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         full_name: fullName,
         role: 'customer',
         is_active: true,
+      })
+
+      // Send welcome coupon notification
+      await supabase.from('notifications').insert({
+        user_id: data.user.id,
+        type: 'promo',
+        title: '🎁 Welcome Gift: Use NEWBIE100',
+        message: 'Get ₹100 off your first order above ₹400. Use code NEWBIE100 at checkout!',
+        data: { coupon_code: 'NEWBIE100' },
       })
     }
 

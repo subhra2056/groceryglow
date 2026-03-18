@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   User,
   ClipboardList,
@@ -556,8 +557,7 @@ function AccountContent() {
                         item.product && (
                           <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-card transition-all">
                             <div className="relative bg-gray-50 h-36 flex items-center justify-center">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={productImage(item.product.images)} alt={item.product.name} className="h-24 w-24 object-contain" />
+                              <Image src={productImage(item.product.images)} alt={item.product.name} width={96} height={96} className="h-24 w-24 object-contain" />
                               <button
                                 onClick={() => removeFromWishlist(item.id)}
                                 className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:scale-110 transition-transform"

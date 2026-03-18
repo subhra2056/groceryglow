@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState, useCallback } from 'react'
+import Image from 'next/image'
 import {
   Plus,
   Edit2,
@@ -238,8 +239,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                           {product.images?.[0] ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={product.images[0]} alt="" className="w-full h-full object-contain rounded-lg" />
+                            <Image src={product.images[0]} alt={product.name} width={40} height={40} className="w-full h-full object-contain rounded-lg" />
                           ) : (
                             <Package className="w-4 h-4 text-gray-400" />
                           )}

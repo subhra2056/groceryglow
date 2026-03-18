@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Heart, Star, Plus, Minus } from 'lucide-react'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -79,14 +80,16 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
     <div className="card group flex flex-col h-full">
       {/* ── Image ── */}
       <div className="relative bg-gray-50 h-28 sm:h-36 flex items-center justify-center overflow-hidden flex-shrink-0 rounded-t-2xl">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={productImage(product.images)}
           alt={product.name}
+          width={96}
+          height={96}
           className={cn(
             'h-20 w-20 sm:h-24 sm:w-24 object-contain transition-transform duration-500',
             !outOfStock && 'group-hover:scale-110'
           )}
+          sizes="(max-width: 640px) 80px, 96px"
         />
 
         {/* Badges — top left */}

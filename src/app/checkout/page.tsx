@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
@@ -26,8 +27,23 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null)
   const [orderNumber, setOrderNumber] = useState<string>('')
 
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    coupon_id: string
+    type: 'personal' | 'global'
+    discount_amount: number
+    min_order_amount: number
+    code: string
+  } | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const [couponLoading, setCouponLoading] = useState(false)
+
   const DELIVERY_FEE = subtotal >= 50 ? 0 : 4.99
-  const total = subtotal + DELIVERY_FEE
+  const appliedDiscount =
+    appliedCoupon && subtotal >= appliedCoupon.min_order_amount
+      ? appliedCoupon.discount_amount
+      : 0
+  const total = Math.max(0, subtotal + DELIVERY_FEE - appliedDiscount)
 
   const [form, setForm] = useState<CheckoutFormData>({
     full_name: profile?.full_name ?? '',
@@ -44,6 +60,30 @@ export default function CheckoutPage() {
   const update = (field: keyof CheckoutFormData, value: string) =>
     setForm((f) => ({ ...f, [field]: value }))
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return
+    setCouponLoading(true)
+    setCouponError(null)
+    try {
+      const res = await fetch('/api/apply-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponCode.trim().toUpperCase() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setAppliedCoupon(data)
+        setCouponError(null)
+      } else {
+        setCouponError(data.error ?? 'Failed to apply coupon')
+      }
+    } catch {
+      setCouponError('Something went wrong. Please try again.')
+    } finally {
+      setCouponLoading(false)
+    }
+  }
+
   const handlePlaceOrder = async () => {
     if (!user || items.length === 0) return
     setPlacingOrder(true)
@@ -58,7 +98,7 @@ export default function CheckoutPage() {
         order_number: number,
         subtotal,
         delivery_fee: DELIVERY_FEE,
-        discount: 0,
+        discount: appliedDiscount,
         total,
         payment_method: form.payment_method,
         payment_status: form.payment_method === 'cash_on_delivery' ? 'pending' : 'paid',
@@ -92,6 +132,22 @@ export default function CheckoutPage() {
         image: product.images?.[0] ?? null,
       }))
     )
+
+    // Mark coupon as used
+    if (appliedCoupon && appliedDiscount > 0) {
+      if (appliedCoupon.type === 'personal') {
+        await supabase
+          .from('coupons')
+          .update({ is_used: true })
+          .eq('id', appliedCoupon.coupon_id)
+      } else {
+        await supabase.from('coupon_uses').insert({
+          coupon_id: appliedCoupon.coupon_id,
+          user_id: user.id,
+          order_id: order.id,
+        })
+      }
+    }
 
     // Clear the cart
     await clearCart()
@@ -144,6 +200,12 @@ export default function CheckoutPage() {
                 <span className="text-gray-400">Delivery</span>
                 <span>{DELIVERY_FEE === 0 ? 'FREE' : formatPrice(DELIVERY_FEE)}</span>
               </div>
+              {appliedDiscount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Coupon ({appliedCoupon!.code})</span>
+                  <span>-{formatPrice(appliedDiscount)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-bold">
                 <span>Total Paid</span>
                 <span className="text-forest-green">{formatPrice(total)}</span>
@@ -325,6 +387,45 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
+                  {/* Coupon Code */}
+                  <div className="mb-6">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Coupon Code</p>
+                    {appliedCoupon ? (
+                      <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                        <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-green-700">{appliedCoupon.code}</p>
+                          <p className="text-xs text-green-600">₹{appliedCoupon.discount_amount} off applied!</p>
+                        </div>
+                        <button
+                          onClick={() => { setAppliedCoupon(null); setCouponCode('') }}
+                          className="text-xs text-gray-400 hover:text-red-500"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex gap-2">
+                          <input
+                            value={couponCode}
+                            onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(null) }}
+                            placeholder="Enter coupon code"
+                            className="input flex-1 text-sm uppercase"
+                          />
+                          <button
+                            onClick={handleApplyCoupon}
+                            disabled={couponLoading || !couponCode.trim()}
+                            className="btn-secondary text-sm py-2 px-4 flex-shrink-0"
+                          >
+                            {couponLoading ? '...' : 'Apply'}
+                          </button>
+                        </div>
+                        {couponError && <p className="text-xs text-red-500 mt-1.5">{couponError}</p>}
+                      </>
+                    )}
+                  </div>
+
                   <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
                     <button onClick={() => setStep('address')} className="btn-ghost flex items-center justify-center sm:justify-start gap-2">
                       <ArrowLeft className="w-4 h-4" /> Back
@@ -352,8 +453,7 @@ export default function CheckoutPage() {
                 <div className="space-y-3 mb-4 max-h-52 overflow-y-auto scrollbar-hide">
                   {items.map(({ product, quantity }) => (
                     <div key={product.id} className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={product.images?.[0] ?? '/placeholder-product.svg'} alt={product.name} className="w-10 h-10 object-contain flex-shrink-0" />
+                      <Image src={product.images?.[0] ?? '/placeholder-product.svg'} alt={product.name} width={40} height={40} className="w-10 h-10 object-contain flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-charcoal truncate">{product.name}</p>
                         <p className="text-[10px] text-gray-400">×{quantity}</p>
@@ -372,6 +472,12 @@ export default function CheckoutPage() {
                     <span>Delivery</span>
                     <span>{DELIVERY_FEE === 0 ? <span className="text-green-600 font-medium">FREE</span> : formatPrice(DELIVERY_FEE)}</span>
                   </div>
+                  {appliedDiscount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon ({appliedCoupon!.code})</span>
+                      <span>-{formatPrice(appliedDiscount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between font-bold pt-1 border-t border-gray-100">
                     <span>Total</span>
                     <span className="text-forest-green">{formatPrice(total)}</span>

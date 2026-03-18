@@ -16,8 +16,8 @@ const config: Config = {
         'sunset-orange': '#FF8A3D',
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        serif: ['DM Serif Display', 'Georgia', 'serif'],
+        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-dm-serif)', 'Georgia', 'serif'],
       },
       backgroundImage: {
         'gradient-hero': 'linear-gradient(135deg, #1F6B4F 0%, #2d8a68 50%, #4CAF50 100%)',
