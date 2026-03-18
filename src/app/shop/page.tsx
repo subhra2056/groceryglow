@@ -181,7 +181,7 @@ function ShopContent() {
                 </span>{' '}
                 / <span>Categories</span>
               </p>
-              <h1 className="text-3xl font-black">All Categories</h1>
+              <h1 className="text-3xl font-bold">All Categories</h1>
               {!loading && (
                 <p className="text-white/70 text-sm mt-1">
                   {categories.length} categories available
@@ -245,7 +245,7 @@ function ShopContent() {
               </span>{' '}
               / <span>Shop</span>
             </p>
-            <h1 className="text-3xl font-black">{pageTitle}</h1>
+            <h1 className="text-3xl font-bold">{pageTitle}</h1>
             {!loading && (
               <p className="text-white/70 text-sm mt-1">
                 {products.length} products found

@@ -34,7 +34,7 @@ export default function CartPage() {
         {/* Header */}
         <div className="bg-gradient-hero py-10">
           <div className="container-app text-white">
-            <h1 className="text-3xl font-black flex items-center gap-3">
+            <h1 className="text-3xl font-bold flex items-center gap-3">
               <ShoppingCart className="w-8 h-8" />
               My Cart
               {items.length > 0 && (

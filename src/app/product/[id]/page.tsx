@@ -269,7 +269,7 @@ export default function ProductDetailPage() {
                 </Link>
               )}
 
-              <h1 className="text-2xl md:text-3xl font-black text-charcoal leading-tight">
+              <h1 className="text-2xl md:text-3xl font-bold text-charcoal leading-tight">
                 {product.name}
               </h1>
 
@@ -306,7 +306,7 @@ export default function ProductDetailPage() {
               {/* Price */}
               <div>
                 <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-black text-forest-green">{formatPrice(price)}</span>
+                  <span className="text-3xl font-bold text-forest-green">{formatPrice(price)}</span>
                   {hasDiscount && (
                     <span className="text-lg text-gray-400 line-through">{formatPrice(product.price)}</span>
                   )}

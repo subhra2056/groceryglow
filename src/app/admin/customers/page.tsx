@@ -35,7 +35,7 @@ export default function AdminCustomersPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <Users className="w-6 h-6 text-forest-green" />
           Customers
         </h1>

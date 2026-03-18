@@ -3,6 +3,7 @@ import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { CartProvider } from '@/contexts/CartContext'
 import { NotificationProvider } from '@/contexts/NotificationContext'
+import ScrollAnimator from '@/components/ui/ScrollAnimator'
 
 export const metadata: Metadata = {
   title: {
@@ -26,11 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,300..600&family=DM+Serif+Display:ital@0;1&display=swap"
           rel="stylesheet"
         />
       </head>
       <body>
+        <ScrollAnimator />
         <AuthProvider>
           <CartProvider>
             <NotificationProvider>{children}</NotificationProvider>

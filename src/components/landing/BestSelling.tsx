@@ -32,17 +32,17 @@ export default function BestSelling() {
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-sunset-orange text-sm font-semibold uppercase tracking-widest mb-2">
+            <p data-animate className="text-sunset-orange text-sm font-medium uppercase tracking-widest mb-2">
               Top Picks
             </p>
-            <h2 className="section-title">Best Selling Products</h2>
-            <p className="section-subtitle">
+            <h2 data-animate className="section-title anim-d1">Best Selling Products</h2>
+            <p data-animate className="section-subtitle anim-d2">
               The freshest items our customers love most, week after week.
             </p>
           </div>
           <Link
             href="/shop"
-            className="hidden md:flex items-center gap-1.5 text-forest-green font-semibold text-sm hover:gap-3 transition-all"
+            className="hidden md:flex items-center gap-1.5 text-forest-green font-medium text-sm hover:gap-3 transition-all"
           >
             View All <ArrowRight className="w-4 h-4" />
           </Link>
@@ -59,8 +59,10 @@ export default function BestSelling() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {products.map((product, i) => (
+              <div key={product.id} data-animate className={`anim-d${Math.min(i + 1, 8)}`}>
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         )}

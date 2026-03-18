@@ -55,7 +55,7 @@ export default function SignUpPage() {
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">🎉</span>
           </div>
-          <h2 className="text-xl font-black text-charcoal mb-2">Account Created!</h2>
+          <h2 className="text-xl font-bold text-charcoal mb-2">Account Created!</h2>
           <p className="text-gray-400 text-sm">
             Welcome to GroceryGlow! Redirecting you now…
           </p>
@@ -78,7 +78,7 @@ export default function SignUpPage() {
         </Link>
 
         <div className="text-white">
-          <h2 className="text-4xl font-black mb-4 leading-tight">
+          <h2 className="text-4xl font-bold mb-4 leading-tight">
             Join thousands of
             <br />
             happy customers
@@ -95,7 +95,7 @@ export default function SignUpPage() {
               { value: '4.9★', label: 'Average Rating' },
             ].map(({ value, label }) => (
               <div key={label} className="bg-white/15 rounded-xl p-3">
-                <p className="text-2xl font-black">{value}</p>
+                <p className="text-2xl font-bold">{value}</p>
                 <p className="text-white/70 text-xs">{label}</p>
               </div>
             ))}
@@ -118,7 +118,7 @@ export default function SignUpPage() {
             </span>
           </Link>
 
-          <h1 className="text-2xl font-black text-charcoal mb-1">Create your account</h1>
+          <h1 className="text-2xl font-bold text-charcoal mb-1">Create your account</h1>
           <p className="text-gray-400 text-sm mb-6">Free to join. No credit card required.</p>
 
           {error && (

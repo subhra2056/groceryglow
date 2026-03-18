@@ -74,7 +74,7 @@ export default function AdminCategoriesPage() {
     <div className="p-6 md:p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2"><Tag className="w-6 h-6 text-forest-green" />Categories</h1>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Tag className="w-6 h-6 text-forest-green" />Categories</h1>
           <p className="text-gray-400 text-sm mt-1">{categories.length} categories</p>
         </div>
         <button onClick={openCreate} className="btn-primary"><Plus className="w-4 h-4" />Add Category</button>

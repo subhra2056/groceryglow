@@ -48,7 +48,7 @@ function SignInContent() {
         </Link>
 
         <div className="text-white">
-          <h2 className="text-4xl font-black mb-4 leading-tight">
+          <h2 className="text-4xl font-bold mb-4 leading-tight">
             Fresh groceries,
             <br />
             delivered to your door.
@@ -81,7 +81,7 @@ function SignInContent() {
             </span>
           </Link>
 
-          <h1 className="text-2xl font-black text-charcoal mb-1">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-charcoal mb-1">Welcome back</h1>
           <p className="text-gray-400 text-sm mb-6">Sign in to your account to continue</p>
 
           {error && (

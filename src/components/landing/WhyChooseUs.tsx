@@ -46,29 +46,29 @@ export default function WhyChooseUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left — text */}
           <div>
-            <p className="text-sunset-orange text-sm font-semibold uppercase tracking-widest mb-2">
+            <p data-animate className="text-sunset-orange text-sm font-medium uppercase tracking-widest mb-2">
               Why GroceryGlow
             </p>
-            <h2 className="section-title mb-4">
+            <h2 data-animate className="section-title mb-4 anim-d1">
               The Freshest Choice
               <br />
               <span className="text-gradient">for Your Family</span>
             </h2>
-            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-md">
+            <p data-animate className="text-gray-500 text-base leading-relaxed mb-8 max-w-md anim-d2">
               We obsess over quality so you don&apos;t have to. Every item is hand-selected,
               temperature-controlled during transit, and delivered with care.
             </p>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
+            <div data-animate className="grid grid-cols-3 gap-4 anim-d3">
               {[
                 { value: '50k+', label: 'Happy Customers' },
                 { value: '500+', label: 'Products' },
                 { value: '4.9★', label: 'Average Rating' },
               ].map((stat) => (
                 <div key={stat.label} className="bg-white rounded-xl p-4 text-center shadow-sm">
-                  <p className="text-2xl font-black text-forest-green">{stat.value}</p>
-                  <p className="text-xs text-gray-500 mt-1 font-medium">{stat.label}</p>
+                  <p className="text-2xl font-semibold text-forest-green">{stat.value}</p>
+                  <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -76,10 +76,11 @@ export default function WhyChooseUs() {
 
           {/* Right — feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {features.map((f) => (
+            {features.map((f, i) => (
               <div
                 key={f.title}
-                className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-card transition-all duration-300 hover:-translate-y-0.5"
+                data-animate
+                className={`anim-d${i + 1} bg-white rounded-2xl p-5 shadow-sm hover:shadow-card transition-all duration-300 hover:-translate-y-0.5`}
               >
                 <div className={`w-10 h-10 rounded-xl ${f.color} flex items-center justify-center mb-3`}>
                   <f.icon className="w-5 h-5" />

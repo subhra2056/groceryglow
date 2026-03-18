@@ -73,7 +73,7 @@ export default function AdminOrdersPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <ClipboardList className="w-6 h-6 text-forest-green" />
           Orders
         </h1>

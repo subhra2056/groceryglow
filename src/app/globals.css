@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
-
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -11,6 +9,17 @@
 
   body {
     @apply bg-cream text-charcoal font-sans antialiased;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
 
   * {
@@ -22,21 +31,21 @@
   /* ── Buttons ── */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-sunset-orange text-white font-semibold text-sm
+           bg-sunset-orange text-white font-medium text-sm
            hover:bg-orange-500 active:scale-95
            transition-all duration-200 shadow-md hover:shadow-lg;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-forest-green text-white font-semibold text-sm
+           bg-forest-green text-white font-medium text-sm
            hover:bg-green-800 active:scale-95
            transition-all duration-200 shadow-md hover:shadow-lg;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           border-2 border-forest-green text-forest-green font-semibold text-sm
+           border-2 border-forest-green text-forest-green font-medium text-sm
            hover:bg-forest-green hover:text-white active:scale-95
            transition-all duration-200;
   }
@@ -60,11 +69,12 @@
            text-charcoal placeholder-gray-400 text-sm
            focus:outline-none focus:ring-2 focus:ring-forest-green/30 focus:border-forest-green
            transition-colors duration-200;
+    font-weight: 400;
   }
 
   /* ── Badge ── */
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
   .badge-green {
@@ -79,13 +89,16 @@
     @apply badge bg-red-100 text-red-700;
   }
 
-  /* ── Section titles ── */
+  /* ── Section titles — use DM Serif Display ── */
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-charcoal leading-tight;
+    @apply text-3xl md:text-4xl text-charcoal leading-tight font-serif;
+    font-weight: 400;
   }
 
   .section-subtitle {
-    @apply text-base md:text-lg text-gray-500 mt-3 max-w-xl;
+    @apply text-base text-gray-500 mt-3 max-w-xl font-sans;
+    font-weight: 400;
+    letter-spacing: 0;
   }
 
   /* ── Container ── */
@@ -112,4 +125,39 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* ── Scroll-reveal animations ── */
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-animate="fade-left"] {
+    transform: translateX(-28px);
+  }
+
+  [data-animate="fade-right"] {
+    transform: translateX(28px);
+  }
+
+  [data-animate="scale"] {
+    transform: scale(0.92) translateY(12px);
+  }
+
+  [data-animate].in-view {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  .anim-d1 { transition-delay: 0.07s; }
+  .anim-d2 { transition-delay: 0.14s; }
+  .anim-d3 { transition-delay: 0.21s; }
+  .anim-d4 { transition-delay: 0.28s; }
+  .anim-d5 { transition-delay: 0.35s; }
+  .anim-d6 { transition-delay: 0.42s; }
+  .anim-d7 { transition-delay: 0.49s; }
+  .anim-d8 { transition-delay: 0.56s; }
 }

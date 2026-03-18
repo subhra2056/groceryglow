@@ -42,11 +42,11 @@ export default function HowItWorks() {
     <section className="py-16 md:py-24 bg-white">
       <div className="container-app">
         <div className="text-center mb-12">
-          <p className="text-sunset-orange text-sm font-semibold uppercase tracking-widest mb-2">
+          <p data-animate className="text-sunset-orange text-sm font-medium uppercase tracking-widest mb-2">
             Simple Process
           </p>
-          <h2 className="section-title mx-auto">How GroceryGlow Works</h2>
-          <p className="section-subtitle mx-auto text-center">
+          <h2 data-animate className="section-title mx-auto anim-d1">How GroceryGlow Works</h2>
+          <p data-animate className="section-subtitle mx-auto text-center anim-d2">
             From click to doorstep in four easy steps. Fresh groceries have never been this simple.
           </p>
         </div>
@@ -58,12 +58,12 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={step.step}
-              className={`relative ${step.color} border rounded-2xl p-6 text-center hover:-translate-y-1 hover:shadow-card transition-all duration-300`}
-              style={{ animationDelay: `${i * 0.1}s` }}
+              data-animate
+              className={`anim-d${i + 1} relative ${step.color} border rounded-2xl p-6 text-center hover:-translate-y-1 hover:shadow-card transition-all duration-300`}
             >
               {/* Step number */}
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white border border-gray-100 rounded-full w-7 h-7 flex items-center justify-center shadow-sm">
-                <span className={`text-[10px] font-black ${step.stepColor}`}>{step.step}</span>
+                <span className={`text-[10px] font-bold ${step.stepColor}`}>{step.step}</span>
               </div>
 
               <span className="text-5xl block mb-4 mt-3">{step.emoji}</span>

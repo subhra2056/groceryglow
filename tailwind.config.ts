@@ -16,7 +16,8 @@ const config: Config = {
         'sunset-orange': '#FF8A3D',
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        serif: ['DM Serif Display', 'Georgia', 'serif'],
       },
       backgroundImage: {
         'gradient-hero': 'linear-gradient(135deg, #1F6B4F 0%, #2d8a68 50%, #4CAF50 100%)',
@@ -29,13 +30,33 @@ const config: Config = {
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
+        'float-slow': 'float 9s ease-in-out infinite',
+        'float-fast': 'float 4s ease-in-out infinite',
+        'float-reverse': 'floatReverse 7s ease-in-out infinite',
+        'drift': 'drift 12s ease-in-out infinite',
+        'spin-slow': 'spin 20s linear infinite',
+        'pulse-slow': 'pulse 4s ease-in-out infinite',
+        'blob': 'blob 8s ease-in-out infinite',
         'fade-up': 'fadeUp 0.6s ease-out forwards',
         'slide-in': 'slideIn 0.3s ease-out forwards',
       },
       keyframes: {
         float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-14px) rotate(3deg)' },
+        },
+        floatReverse: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(14px) rotate(-3deg)' },
+        },
+        drift: {
+          '0%, 100%': { transform: 'translateY(0px) translateX(0px) rotate(0deg)' },
+          '33%': { transform: 'translateY(-18px) translateX(10px) rotate(5deg)' },
+          '66%': { transform: 'translateY(8px) translateX(-8px) rotate(-3deg)' },
+        },
+        blob: {
+          '0%, 100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+          '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
         },
         fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },

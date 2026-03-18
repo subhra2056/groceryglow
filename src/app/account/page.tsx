@@ -156,11 +156,11 @@ function AccountContent() {
         <div className="bg-gradient-hero py-10">
           <div className="container-app text-white">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-2xl font-black">
+              <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
                 {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
               </div>
               <div>
-                <h1 className="text-2xl font-black">{profile?.full_name ?? 'My Account'}</h1>
+                <h1 className="text-2xl font-bold">{profile?.full_name ?? 'My Account'}</h1>
                 <p className="text-white/70 text-sm">{profile?.email}</p>
               </div>
             </div>

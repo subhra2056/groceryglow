@@ -19,17 +19,17 @@ export default function FeaturedCategories() {
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-sunset-orange text-sm font-semibold uppercase tracking-widest mb-2">
+            <p data-animate className="text-sunset-orange text-sm font-medium uppercase tracking-widest mb-2">
               Browse by Category
             </p>
-            <h2 className="section-title">Shop by Category</h2>
-            <p className="section-subtitle">
+            <h2 data-animate className="section-title anim-d1">Shop by Category</h2>
+            <p data-animate className="section-subtitle anim-d2">
               Explore our wide range of fresh, organic produce and pantry staples.
             </p>
           </div>
           <Link
             href="/shop?view=categories"
-            className="hidden md:flex items-center gap-1.5 text-forest-green font-semibold text-sm hover:gap-3 transition-all"
+            className="hidden md:flex items-center gap-1.5 text-forest-green font-medium text-sm hover:gap-3 transition-all"
           >
             All Categories <ArrowRight className="w-4 h-4" />
           </Link>
@@ -37,11 +37,12 @@ export default function FeaturedCategories() {
 
         {/* Category grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {categories.map((cat) => (
+          {categories.map((cat, i) => (
             <Link
               key={cat.slug}
               href={`/shop?category=${cat.slug}`}
-              className={`group relative bg-gradient-to-br ${cat.color} border ${cat.border} rounded-2xl p-5 flex flex-col items-center gap-3 hover:-translate-y-1 hover:shadow-card transition-all duration-300 overflow-hidden`}
+              data-animate
+              className={`anim-d${Math.min(i + 1, 8)} group relative bg-gradient-to-br ${cat.color} border ${cat.border} rounded-2xl p-5 flex flex-col items-center gap-3 hover:-translate-y-1 hover:shadow-card transition-all duration-300 overflow-hidden`}
             >
               {/* Decorative circle */}
               <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/40 rounded-full" />

@@ -26,27 +26,27 @@ export default function Newsletter() {
 
       <div className="container-app relative z-10">
         <div className="max-w-xl mx-auto text-center text-white">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-white/15 rounded-2xl mb-6">
+          <div data-animate className="inline-flex items-center justify-center w-14 h-14 bg-white/15 rounded-2xl mb-6">
             <Mail className="w-7 h-7 text-white" />
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-black mb-3">
+          <h2 data-animate className="font-serif text-3xl md:text-4xl mb-3 anim-d1" style={{fontWeight: 400}}>
             Get Fresh Deals in Your Inbox
           </h2>
-          <p className="text-white/75 text-base mb-8">
+          <p data-animate className="text-white/75 text-base mb-8 anim-d2">
             Subscribe to our newsletter and be the first to know about exclusive discounts,
             seasonal specials, and new arrivals.
           </p>
 
           {submitted ? (
-            <div className="flex items-center justify-center gap-3 bg-white/15 border border-white/30 rounded-2xl px-6 py-4">
+            <div data-animate className="flex items-center justify-center gap-3 bg-white/15 border border-white/30 rounded-2xl px-6 py-4">
               <CheckCircle2 className="w-6 h-6 text-leaf-green" />
               <p className="font-semibold">
                 You&apos;re subscribed! Watch your inbox for fresh deals 🎉
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form data-animate onSubmit={handleSubmit} className="flex gap-2 anim-d3">
               <div className="relative flex-1">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input

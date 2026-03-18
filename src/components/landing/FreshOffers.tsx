@@ -40,18 +40,18 @@ export default function FreshOffers() {
       <div className="container-app">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-sunset-orange/10 text-sunset-orange rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
+          <div data-animate className="inline-flex items-center gap-2 bg-sunset-orange/10 text-sunset-orange rounded-full px-4 py-1.5 text-sm font-medium mb-4">
             <Tag className="w-4 h-4" />
             Limited Time Offers
           </div>
-          <h2 className="section-title mx-auto">Fresh Deals Just for You</h2>
-          <p className="section-subtitle mx-auto text-center">
+          <h2 data-animate className="section-title mx-auto anim-d1">Fresh Deals Just for You</h2>
+          <p data-animate className="section-subtitle mx-auto text-center anim-d2">
             Handpicked discounts on our most popular categories. Don&apos;t miss out!
           </p>
         </div>
 
         {/* Featured banner — full width */}
-        <div className="relative bg-gradient-hero rounded-3xl overflow-hidden p-8 md:p-12 mb-6 flex items-center justify-between">
+        <div data-animate className="relative bg-gradient-hero rounded-3xl overflow-hidden p-8 md:p-12 mb-6 flex items-center justify-between">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/3" />
           <div className="absolute bottom-0 left-1/4 w-40 h-40 bg-leaf-green/20 rounded-full translate-y-1/2" />
 
@@ -59,7 +59,7 @@ export default function FreshOffers() {
             <span className="inline-block bg-sunset-orange text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
               🔥 Hot Deal of the Week
             </span>
-            <h3 className="text-3xl md:text-4xl font-black leading-tight mb-3">
+            <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-3">
               Get 30% Off Your First Order
             </h3>
             <p className="text-white/80 text-base mb-6">
@@ -79,11 +79,12 @@ export default function FreshOffers() {
 
         {/* Three deal cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {deals.map((deal) => (
+          {deals.map((deal, i) => (
             <Link
               key={deal.title}
               href={deal.href}
-              className={`group ${deal.bg} border ${deal.border} rounded-2xl p-6 flex items-center gap-4 hover:-translate-y-1 hover:shadow-card transition-all duration-300`}
+              data-animate
+              className={`anim-d${i + 1} group ${deal.bg} border ${deal.border} rounded-2xl p-6 flex items-center gap-4 hover:-translate-y-1 hover:shadow-card transition-all duration-300`}
             >
               <span className="text-5xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                 {deal.emoji}

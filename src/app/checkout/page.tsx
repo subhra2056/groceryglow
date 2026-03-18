@@ -127,7 +127,7 @@ export default function CheckoutPage() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-10 h-10 text-green-500" />
             </div>
-            <h1 className="text-2xl font-black text-charcoal mb-2">Order Placed! 🎉</h1>
+            <h1 className="text-2xl font-bold text-charcoal mb-2">Order Placed! 🎉</h1>
             <p className="text-gray-400 text-sm mb-1">Your order number is</p>
             <p className="text-forest-green font-bold text-lg mb-4">{orderNumber}</p>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
@@ -176,7 +176,7 @@ export default function CheckoutPage() {
         {/* Header */}
         <div className="bg-gradient-hero py-10">
           <div className="container-app text-white">
-            <h1 className="text-3xl font-black">Checkout</h1>
+            <h1 className="text-3xl font-bold">Checkout</h1>
             {/* Steps */}
             <div className="flex items-center gap-4 mt-3">
               {(['address', 'payment'] as const).map((s, i) => (

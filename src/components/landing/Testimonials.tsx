@@ -62,11 +62,11 @@ export default async function Testimonials() {
     <section className="py-16 md:py-24 bg-white">
       <div className="container-app">
         <div className="text-center mb-12">
-          <p className="text-sunset-orange text-sm font-semibold uppercase tracking-widest mb-2">
+          <p data-animate className="text-sunset-orange text-sm font-medium uppercase tracking-widest mb-2">
             What Customers Say
           </p>
-          <h2 className="section-title mx-auto">Loved by Our Customers</h2>
-          <p className="section-subtitle mx-auto text-center">
+          <h2 data-animate className="section-title mx-auto anim-d1">Loved by Our Customers</h2>
+          <p data-animate className="section-subtitle mx-auto text-center anim-d2">
             Real reviews from real shoppers.
           </p>
         </div>
@@ -82,7 +82,8 @@ export default async function Testimonials() {
             return (
               <div
                 key={review.id}
-                className="bg-cream rounded-2xl p-6 hover:shadow-card transition-all duration-300 hover:-translate-y-0.5"
+                data-animate
+                className={`anim-d${i + 1} bg-cream rounded-2xl p-6 hover:shadow-card transition-all duration-300 hover:-translate-y-0.5`}
               >
                 <div className="flex items-start gap-4">
                   <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
@@ -110,7 +111,7 @@ export default async function Testimonials() {
         {avg && (
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
             <div>
-              <p className="text-5xl font-black text-forest-green">{avg}</p>
+              <p className="text-5xl font-bold text-forest-green">{avg}</p>
               <Stars count={Math.round(Number(avg))} />
               <p className="text-xs text-gray-400 mt-1">Based on {total} review{total !== 1 ? 's' : ''}</p>
             </div>

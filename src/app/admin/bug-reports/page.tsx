@@ -66,7 +66,7 @@ export default function BugReportsPage() {
     <div className="p-6 md:p-8 h-full">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <div className="w-8 h-8 bg-red-100 rounded-xl flex items-center justify-center">
             <Bug className="w-4 h-4 text-red-500" />
           </div>
@@ -83,7 +83,7 @@ export default function BugReportsPage() {
           { label: 'Resolved', count: resolvedCount, color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-100' },
         ].map(({ label, count, color, bg, border }) => (
           <div key={label} className={cn('rounded-2xl p-4 border', bg, border)}>
-            <p className={cn('text-2xl font-black', color)}>{count}</p>
+            <p className={cn('text-2xl font-semibold tracking-tight', color)}>{count}</p>
             <p className="text-xs text-gray-500 mt-0.5">{label}</p>
           </div>
         ))}

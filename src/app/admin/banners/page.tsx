@@ -73,7 +73,7 @@ export default function AdminBannersPage() {
     <div className="p-6 md:p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2"><ImageIcon className="w-6 h-6 text-forest-green" />Banners</h1>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><ImageIcon className="w-6 h-6 text-forest-green" />Banners</h1>
           <p className="text-gray-400 text-sm mt-1">{banners.length} banners</p>
         </div>
         <button onClick={openCreate} className="btn-primary"><Plus className="w-4 h-4" />Add Banner</button>
