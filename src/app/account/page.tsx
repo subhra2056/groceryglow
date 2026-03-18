@@ -1207,10 +1207,17 @@ function AccountContent() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-charcoal">Notifications</h2>
-                    {unreadCount > 0 && (
-                      <button onClick={markAllAsRead} className="text-xs text-forest-green font-medium hover:underline">
-                        Mark all as read
-                      </button>
+                    {notifications.length > 0 && (
+                      <div className="flex items-center gap-3">
+                        {unreadCount > 0 && (
+                          <button onClick={markAllAsRead} className="text-xs text-forest-green font-medium hover:underline">
+                            Mark all as read
+                          </button>
+                        )}
+                        <button onClick={clearAll} className="text-xs text-red-400 font-medium hover:underline">
+                          Clear all
+                        </button>
+                      </div>
                     )}
                   </div>
                   {notifications.length === 0 ? (
