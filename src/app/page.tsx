@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // Re-render at most once per hour
 
 import Navbar from '@/components/navbar/Navbar'
 import Hero from '@/components/landing/Hero'

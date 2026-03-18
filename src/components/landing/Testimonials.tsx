@@ -1,5 +1,5 @@
 import { Star } from 'lucide-react'
-import { createClient, createServiceClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 function Stars({ count }: { count: number }) {
   return (
@@ -21,8 +21,9 @@ const AVATAR_COLORS = [
 ]
 
 export default async function Testimonials() {
-  const supabase = await createClient()
-  const service = createServiceClient()
+  // Use service client (no cookies) so the landing page can be statically cached
+  const supabase = createServiceClient()
+  const service = supabase
 
   const { data: reviews } = await supabase
     .from('reviews')
