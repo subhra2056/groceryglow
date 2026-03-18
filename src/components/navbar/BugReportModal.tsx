@@ -112,7 +112,7 @@ export default function BugReportModal({ onClose }: { onClose: () => void }) {
             <p className="text-sm text-gray-400">Thank you for helping us improve GroceryGlow.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
+          <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-5 space-y-5">
             {/* Description */}
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">
@@ -158,7 +158,7 @@ export default function BugReportModal({ onClose }: { onClose: () => void }) {
                   onDrop={handleDrop}
                   onDragOver={(e) => e.preventDefault()}
                   onClick={() => fileRef.current?.click()}
-                  className="w-full border-2 border-dashed border-gray-200 hover:border-forest-green/40 hover:bg-green-50/20 rounded-xl p-7 flex flex-col items-center gap-2.5 cursor-pointer transition-all group"
+                  className="w-full border-2 border-dashed border-gray-200 hover:border-forest-green/40 hover:bg-green-50/20 rounded-xl p-5 sm:p-7 flex flex-col items-center gap-2.5 cursor-pointer transition-all group"
                 >
                   <div className="w-11 h-11 bg-gray-100 group-hover:bg-green-100 rounded-xl flex items-center justify-center transition-colors">
                     <ImageIcon className="w-5 h-5 text-gray-400 group-hover:text-forest-green transition-colors" />
@@ -180,22 +180,22 @@ export default function BugReportModal({ onClose }: { onClose: () => void }) {
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-1 border-t border-gray-100">
-              <p className="text-xs text-gray-400">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1 border-t border-gray-100">
+              <p className="text-xs text-gray-400 truncate">
                 Reporting as <span className="font-medium text-charcoal">{user?.email}</span>
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || !description.trim()}
-                  className="btn-secondary text-sm py-2 px-4 flex items-center gap-2 disabled:opacity-50"
+                  className="flex-1 sm:flex-none btn-secondary text-sm py-2 px-4 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {submitting ? (
                     <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />

@@ -165,7 +165,7 @@ function ShopContent() {
         <main className="min-h-screen bg-cream pb-16">
           <div className="bg-gradient-hero py-10">
             <div className="container-app text-white">
-              <p className="text-white/70 text-sm mb-1">
+              <p className="text-white/50 text-xs tracking-wide mb-0.5">
                 <span
                   className="hover:text-white cursor-pointer"
                   onClick={() => router.push('/')}
@@ -181,9 +181,9 @@ function ShopContent() {
                 </span>{' '}
                 / <span>Categories</span>
               </p>
-              <h1 className="text-3xl font-bold">All Categories</h1>
+              <h1 className="font-serif text-2xl sm:text-3xl text-white mt-1" style={{fontWeight:400}}>All Categories</h1>
               {!loading && (
-                <p className="text-white/70 text-sm mt-1">
+                <p className="text-white/60 text-xs mt-1.5 tracking-wide uppercase">
                   {categories.length} categories available
                 </p>
               )}
@@ -201,9 +201,9 @@ function ShopContent() {
                   <button
                     key={cat.id}
                     onClick={() => router.push(`/shop?category=${cat.slug}`)}
-                    className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-card transition-all hover:-translate-y-1 text-left"
+                    className="group bg-white rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-card transition-all hover:-translate-y-1 text-left"
                   >
-                    <div className="text-4xl mb-3">
+                    <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">
                       {CATEGORY_ICONS[cat.slug] ?? '🛒'}
                     </div>
                     <h3 className="font-bold text-charcoal text-sm group-hover:text-forest-green transition-colors">
@@ -223,7 +223,7 @@ function ShopContent() {
             )}
           </div>
         </main>
-        <Footer />
+        <Footer hideOnMobile />
       </>
     )
   }
@@ -234,9 +234,9 @@ function ShopContent() {
       <Navbar />
       <main className="min-h-screen bg-cream pb-16">
         {/* Page header */}
-        <div className="bg-gradient-hero py-10">
+        <div className="bg-gradient-hero py-8 sm:py-10">
           <div className="container-app text-white">
-            <p className="text-white/70 text-sm mb-1">
+            <p className="text-white/50 text-xs tracking-wide mb-0.5">
               <span
                 className="hover:text-white cursor-pointer"
                 onClick={() => router.push('/')}
@@ -245,10 +245,10 @@ function ShopContent() {
               </span>{' '}
               / <span>Shop</span>
             </p>
-            <h1 className="text-3xl font-bold">{pageTitle}</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl text-white mt-1" style={{fontWeight:400}}>{pageTitle}</h1>
             {!loading && (
-              <p className="text-white/70 text-sm mt-1">
-                {products.length} products found
+              <p className="text-white/60 text-xs mt-1.5 tracking-wide uppercase">
+                {products.length} {products.length === 1 ? 'product' : 'products'} found
               </p>
             )}
           </div>
@@ -305,7 +305,7 @@ function ShopContent() {
             </div>
           </div>
 
-          <div className="flex gap-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6">
             <ProductFilters
               filters={filters}
               onChange={setFilters}
@@ -331,7 +331,7 @@ function ShopContent() {
                 <div
                   className={cn(
                     viewMode === 'grid'
-                      ? 'grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                      ? 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4'
                       : 'flex flex-col gap-4'
                   )}
                 >
@@ -344,7 +344,7 @@ function ShopContent() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer hideOnMobile />
     </>
   )
 }

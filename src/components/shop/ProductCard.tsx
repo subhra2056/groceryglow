@@ -77,13 +77,13 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
   return (
     <div className="card group">
       {/* ── Image ── */}
-      <div className="relative bg-gray-50 h-48 flex items-center justify-center overflow-hidden">
+      <div className="relative bg-gray-50 h-36 sm:h-40 md:h-44 flex items-center justify-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={productImage(product.images)}
           alt={product.name}
           className={cn(
-            'h-36 w-36 object-contain transition-transform duration-500',
+            'h-24 w-24 sm:h-32 sm:w-32 md:h-36 md:w-36 object-contain transition-transform duration-500',
             !outOfStock && 'group-hover:scale-110'
           )}
         />
@@ -107,7 +107,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
           disabled={togglingWishlist}
           className={cn(
             'absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm transition-all hover:scale-110',
-            'opacity-0 group-hover:opacity-100',
+            'opacity-100 sm:opacity-0 sm:group-hover:opacity-100',
             localWishlisted && 'opacity-100 text-red-400'
           )}
           aria-label={localWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
@@ -117,36 +117,36 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
       </div>
 
       {/* ── Info ── */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {product.category && (
-          <p className="text-xs text-gray-400 mb-1 font-medium">{product.category.name}</p>
+          <p className="text-[9px] uppercase tracking-widest text-gray-400 mb-1 font-medium">{product.category.name}</p>
         )}
 
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-tight">
+          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug tracking-tight">
             {product.name}
           </h3>
         </Link>
 
         {product.review_count > 0 && (
-          <div className="flex items-center gap-1 mt-1">
-            <Star className="w-3 h-3 text-yellow-400 fill-current" />
-            <span className="text-xs text-gray-500">
-              {product.rating_average.toFixed(1)} ({product.review_count})
+          <div className="flex items-center gap-0.5 mt-1">
+            <Star className="w-2.5 h-2.5 text-yellow-400 fill-current" />
+            <span className="text-[10px] text-gray-400 font-medium">
+              {product.rating_average.toFixed(1)}
             </span>
           </div>
         )}
 
         {/* Price + Quantity controls */}
-        <div className="flex items-end justify-between mt-3 gap-2">
-          <div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-forest-green font-bold text-base">{formatPrice(price)}</span>
+        <div className="flex items-end justify-between mt-2 sm:mt-3 gap-1">
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1 flex-wrap">
+              <span className="text-forest-green font-extrabold text-sm tracking-tight">{formatPrice(price)}</span>
               {hasDiscount && (
-                <span className="text-gray-400 text-xs line-through">{formatPrice(product.price)}</span>
+                <span className="text-gray-300 text-[10px] line-through">{formatPrice(product.price)}</span>
               )}
             </div>
-            <p className="text-[10px] text-gray-400">/{product.unit ?? 'unit'}</p>
+            <p className="text-[9px] text-gray-400 tracking-wide">/{product.unit ?? 'unit'}</p>
           </div>
 
           {/* Blinkit-style quantity control */}
@@ -155,22 +155,22 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
           ) : quantity === 0 ? (
             <button
               onClick={handleAdd}
-              className="flex items-center gap-1 px-3 h-8 bg-forest-green text-white text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition-all flex-shrink-0"
+              className="flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 h-7 sm:h-8 bg-forest-green text-white text-[11px] sm:text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition-all flex-shrink-0"
             >
               <Plus className="w-3 h-3" /> ADD
             </button>
           ) : (
-            <div className="flex items-center bg-forest-green rounded-lg overflow-hidden flex-shrink-0 h-8">
+            <div className="flex items-center bg-forest-green rounded-lg overflow-hidden flex-shrink-0 h-7 sm:h-8">
               <button
                 onClick={handleDecrease}
-                className="w-8 h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
+                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
               >
                 <Minus className="w-3 h-3" />
               </button>
-              <span className="w-6 text-center text-white text-xs font-bold">{quantity}</span>
+              <span className="w-5 sm:w-6 text-center text-white text-xs font-bold">{quantity}</span>
               <button
                 onClick={handleIncrease}
-                className="w-8 h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
+                className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:bg-green-700 transition-colors"
               >
                 <Plus className="w-3 h-3" />
               </button>

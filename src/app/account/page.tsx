@@ -165,9 +165,9 @@ function AccountContent() {
 
   const tabs: { id: Tab; label: string; icon: typeof User }[] = [
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'orders', label: 'My Orders', icon: ClipboardList },
+    { id: 'orders', label: 'Orders', icon: ClipboardList },
     { id: 'wishlist', label: 'Wishlist', icon: Heart },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'notifications', label: 'Alerts', icon: Bell },
   ]
 
   return (
@@ -181,17 +181,46 @@ function AccountContent() {
                 {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
               </div>
               <div>
-                <h1 className="text-2xl font-bold">{profile?.full_name ?? 'My Account'}</h1>
-                <p className="text-white/70 text-sm">{profile?.email}</p>
+                <h1 className="font-serif text-xl sm:text-2xl text-white" style={{fontWeight:400}}>{profile?.full_name ?? 'My Account'}</h1>
+                <p className="text-white/50 text-xs tracking-wide mt-0.5">{profile?.email}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="container-app mt-8">
+        <div className="container-app mt-6 sm:mt-8">
+          {/* ── Mobile horizontal tab bar ── */}
+          <div className="md:hidden bg-white rounded-2xl p-2 shadow-sm flex gap-1 overflow-x-auto mb-4 scrollbar-hide">
+            {tabs.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap flex-shrink-0 transition-colors relative ${
+                  activeTab === id
+                    ? 'bg-forest-green/10 text-forest-green'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+                {id === 'notifications' && unreadCount > 0 && (
+                  <span className="w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+            ))}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-red-500 hover:bg-red-50 whitespace-nowrap flex-shrink-0 ml-auto transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" /> Sign Out
+            </button>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-6">
-            {/* ── Sidebar ── */}
-            <div className="md:w-52 flex-shrink-0">
+            {/* ── Desktop Sidebar ── */}
+            <div className="hidden md:block md:w-52 flex-shrink-0">
               <div className="bg-white rounded-2xl p-3 shadow-sm">
                 {tabs.map(({ id, label, icon: Icon }) => (
                   <button
@@ -227,74 +256,93 @@ function AccountContent() {
             <div className="flex-1 min-w-0">
               {/* PROFILE */}
               {activeTab === 'profile' && (
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-bold text-charcoal">Profile Information</h2>
-                    {!editing ? (
-                      <button onClick={() => { setEditing(true); setProfileError(null) }} className="btn-ghost text-sm flex items-center gap-1.5">
-                        <Edit3 className="w-3.5 h-3.5" /> Edit
-                      </button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <button onClick={saveProfile} disabled={savingProfile} className="btn-secondary text-sm py-1.5">
-                          <Save className="w-3.5 h-3.5" /> {savingProfile ? 'Saving…' : 'Save'}
-                        </button>
-                        <button onClick={() => setEditing(false)} className="btn-ghost text-sm py-1.5">
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+                <div className="space-y-4">
+                  {/* Profile card */}
+                  <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    {/* Card header with avatar */}
+                    <div className="bg-gradient-to-r from-forest-green to-leaf-green px-5 py-6 flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
+                        {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
                       </div>
-                    )}
-                  </div>
-
-                  {profileError && (
-                    <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-2">
-                      {profileError}
+                      <div className="min-w-0">
+                        <p className="text-white font-semibold text-base truncate">{profile?.full_name ?? '—'}</p>
+                        <p className="text-white/70 text-xs truncate mt-0.5">{profile?.email}</p>
+                        <span className="inline-block mt-1.5 text-[10px] font-semibold uppercase tracking-wide bg-white/20 text-white px-2 py-0.5 rounded-full">
+                          {profile?.role ?? 'customer'}
+                        </span>
+                      </div>
+                      {!editing && (
+                        <button
+                          onClick={() => { setEditing(true); setProfileError(null) }}
+                          className="ml-auto flex-shrink-0 flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors"
+                        >
+                          <Edit3 className="w-3 h-3" /> Edit
+                        </button>
+                      )}
                     </div>
-                  )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {[
-                      { label: 'Full Name', key: 'full_name' as const, value: profile?.full_name ?? '', editable: true },
-                      { label: 'Email', key: 'email' as const, value: profile?.email ?? '', editable: false },
-                      { label: 'Phone', key: 'phone' as const, value: profile?.phone ?? '', editable: true },
-                      { label: 'Account Type', key: 'role' as const, value: profile?.role ?? 'customer', editable: false },
-                    ].map(({ label, key, value, editable }) => (
-                      <div key={key}>
-                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 block">
-                          {label}
-                        </label>
-                        {editing && editable && key !== 'email' && key !== 'role' ? (
-                          <input
-                            value={editForm[key as keyof typeof editForm] ?? ''}
-                            onChange={(e) => {
-                              const val = key === 'phone'
-                                ? e.target.value.replace(/\D/g, '').slice(0, 15)
-                                : e.target.value
-                              setEditForm((f) => ({ ...f, [key]: val }))
-                            }}
-                            placeholder={key === 'phone' ? 'Digits only, 7–15 numbers' : undefined}
-                            inputMode={key === 'phone' ? 'numeric' : undefined}
-                            className="input text-sm"
-                          />
-                        ) : (
-                          <p className="text-sm font-medium text-charcoal py-3 px-4 bg-gray-50 rounded-xl">
-                            {value || <span className="text-gray-300">—</span>}
-                          </p>
-                        )}
+                    {/* Fields */}
+                    <div className="p-4 sm:p-5">
+                      {profileError && (
+                        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
+                          {profileError}
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Full Name', key: 'full_name' as const, value: profile?.full_name ?? '', editable: true, icon: User },
+                          { label: 'Email Address', key: 'email' as const, value: profile?.email ?? '', editable: false, icon: Bell },
+                          { label: 'Phone Number', key: 'phone' as const, value: profile?.phone ?? '', editable: true, icon: ClipboardList },
+                        ].map(({ label, key, value, editable, icon: FieldIcon }) => (
+                          <div key={key}>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
+                            {editing && editable && key !== 'email' ? (
+                              <input
+                                value={editForm[key as keyof typeof editForm] ?? ''}
+                                onChange={(e) => {
+                                  const val = key === 'phone'
+                                    ? e.target.value.replace(/\D/g, '').slice(0, 15)
+                                    : e.target.value
+                                  setEditForm((f) => ({ ...f, [key]: val }))
+                                }}
+                                placeholder={key === 'phone' ? 'Digits only, 7–15 numbers' : undefined}
+                                inputMode={key === 'phone' ? 'numeric' : undefined}
+                                className="input text-sm"
+                              />
+                            ) : (
+                              <div className="flex items-center gap-2.5 py-2.5 px-3.5 bg-gray-50 rounded-xl">
+                                <FieldIcon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                <span className="text-sm font-medium text-charcoal">
+                                  {value || <span className="text-gray-300">—</span>}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
 
-                  <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
-                    <p className="text-xs text-gray-400">
-                      Member since {profile?.created_at ? formatDate(profile.created_at) : '—'}
-                    </p>
+                      {editing && (
+                        <div className="flex gap-2 mt-4">
+                          <button onClick={saveProfile} disabled={savingProfile} className="btn-secondary text-sm py-2 flex-1 justify-center">
+                            <Save className="w-3.5 h-3.5" /> {savingProfile ? 'Saving…' : 'Save Changes'}
+                          </button>
+                          <button onClick={() => setEditing(false)} className="btn-ghost text-sm py-2 px-4">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+
+                      <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100">
+                        Member since {profile?.created_at ? formatDate(profile.created_at) : '—'}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Danger Zone */}
-                  <div className="mt-6 rounded-2xl border border-red-100 bg-red-50/40 p-5">
+                  <div className="rounded-2xl border border-red-100 bg-red-50/40 p-4 sm:p-5">
                     <h3 className="text-sm font-semibold text-red-600 mb-1">Danger Zone</h3>
-                    <p className="text-xs text-gray-500 mb-4">
+                    <p className="text-xs text-gray-500 mb-3">
                       Permanently delete your account and all associated data. This cannot be undone.
                     </p>
                     <button
@@ -430,9 +478,10 @@ function AccountContent() {
                               <img src={productImage(item.product.images)} alt={item.product.name} className="h-24 w-24 object-contain" />
                               <button
                                 onClick={() => removeFromWishlist(item.id)}
-                                className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm text-red-400 hover:scale-110 transition-transform"
+                                className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:scale-110 transition-transform"
+                                aria-label="Remove from wishlist"
                               >
-                                <Trash2 className="w-3 h-3" />
+                                <Heart className="w-3.5 h-3.5 fill-red-400 text-red-400" />
                               </button>
                             </div>
                             <div className="p-3">
@@ -499,7 +548,7 @@ function AccountContent() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer hideOnMobile />
     </>
   )
 }

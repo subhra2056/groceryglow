@@ -22,7 +22,7 @@ export default function CartPage() {
         <div className="min-h-screen flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>
-        <Footer />
+        <Footer hideOnMobile />
       </>
     )
   }
@@ -34,12 +34,12 @@ export default function CartPage() {
         {/* Header */}
         <div className="bg-gradient-hero py-10">
           <div className="container-app text-white">
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <ShoppingCart className="w-8 h-8" />
+            <h1 className="font-serif text-2xl sm:text-3xl text-white flex items-center gap-3" style={{fontWeight:400}}>
+              <ShoppingCart className="w-7 h-7" />
               My Cart
               {items.length > 0 && (
-                <span className="text-base font-normal opacity-80">
-                  ({items.reduce((s, i) => s + i.quantity, 0)} items)
+                <span className="text-sm font-sans font-normal opacity-60 tracking-wide">
+                  {items.reduce((s, i) => s + i.quantity, 0)} items
                 </span>
               )}
             </h1>
@@ -210,7 +210,7 @@ export default function CartPage() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer hideOnMobile />
     </>
   )
 }

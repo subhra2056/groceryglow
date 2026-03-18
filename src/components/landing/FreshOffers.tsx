@@ -51,7 +51,7 @@ export default function FreshOffers() {
         </div>
 
         {/* Featured banner — full width */}
-        <div data-animate className="relative bg-gradient-hero rounded-3xl overflow-hidden p-8 md:p-12 mb-6 flex items-center justify-between">
+        <div data-animate className="relative bg-gradient-hero rounded-3xl overflow-hidden p-6 md:p-12 mb-6 flex items-center justify-between">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/3" />
           <div className="absolute bottom-0 left-1/4 w-40 h-40 bg-leaf-green/20 rounded-full translate-y-1/2" />
 
@@ -59,7 +59,7 @@ export default function FreshOffers() {
             <span className="inline-block bg-sunset-orange text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
               🔥 Hot Deal of the Week
             </span>
-            <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-3">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-3">
               Get 30% Off Your First Order
             </h3>
             <p className="text-white/80 text-base mb-6">
@@ -86,15 +86,15 @@ export default function FreshOffers() {
               data-animate
               className={`anim-d${i + 1} group ${deal.bg} border ${deal.border} rounded-2xl p-6 flex items-center gap-4 hover:-translate-y-1 hover:shadow-card transition-all duration-300`}
             >
-              <span className="text-5xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+              <span className="text-4xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                 {deal.emoji}
               </span>
               <div className="flex-1 min-w-0">
-                <div className={`inline-block bg-gradient-to-r ${deal.gradient} text-white text-xs font-bold px-2.5 py-0.5 rounded-full mb-2`}>
+                <div className={`inline-block bg-gradient-to-r ${deal.gradient} text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full mb-1.5 tracking-wider uppercase`}>
                   {deal.badge}
                 </div>
-                <h4 className="font-bold text-charcoal text-base leading-tight">{deal.title}</h4>
-                <p className="text-gray-500 text-xs mt-1">{deal.subtitle}</p>
+                <h4 className="font-serif font-normal text-charcoal text-base leading-tight">{deal.title}</h4>
+                <p className="text-gray-400 text-[11px] mt-1 leading-relaxed">{deal.subtitle}</p>
               </div>
               <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-forest-green group-hover:translate-x-1 transition-all flex-shrink-0" />
             </Link>

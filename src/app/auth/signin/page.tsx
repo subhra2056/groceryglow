@@ -132,8 +132,8 @@ function SignInContent() {
             </span>
           </Link>
 
-          <h1 className="text-2xl font-bold text-charcoal mb-1">Welcome back</h1>
-          <p className="text-gray-400 text-sm mb-6">Sign in to your account to continue</p>
+          <h1 className="font-serif text-2xl text-charcoal mb-1" style={{fontWeight:400}}>Welcome back</h1>
+          <p className="text-gray-400 text-xs tracking-wide mb-6">Sign in to your account to continue</p>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">

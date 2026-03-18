@@ -184,7 +184,7 @@ export default function ProductDetailPage() {
         <div className="min-h-screen flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>
-        <Footer />
+        <Footer hideOnMobile />
       </>
     )
   }
@@ -269,7 +269,7 @@ export default function ProductDetailPage() {
                 </Link>
               )}
 
-              <h1 className="text-2xl md:text-3xl font-bold text-charcoal leading-tight">
+              <h1 className="font-serif text-2xl md:text-3xl text-charcoal leading-tight" style={{fontWeight:400}}>
                 {product.name}
               </h1>
 
@@ -552,7 +552,7 @@ export default function ProductDetailPage() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer hideOnMobile />
     </>
   )
 }

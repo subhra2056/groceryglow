@@ -30,7 +30,8 @@ export default function AdminCustomersPage() {
   const toggleBlock = async (customer: Profile) => {
     setTogglingId(customer.id)
     const supabase = createClient()
-    const newStatus = !customer.is_active
+    // Explicit boolean: if currently blocked (false) → unblock (true), otherwise → block (false)
+    const newStatus = customer.is_active === false ? true : false
     const { error } = await supabase
       .from('profiles')
       .update({ is_active: newStatus })
@@ -86,12 +87,12 @@ export default function AdminCustomersPage() {
             </thead>
             <tbody>
               {filtered.map((c) => (
-                <tr key={c.id} className={cn('border-b border-gray-50 transition-colors', c.is_active ? 'hover:bg-gray-50/60' : 'bg-red-50/30 hover:bg-red-50/50')}>
+                <tr key={c.id} className={cn('border-b border-gray-50 transition-colors', c.is_active !== false ? 'hover:bg-gray-50/60' : 'bg-red-50/30 hover:bg-red-50/50')}>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         'w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0',
-                        c.is_active ? 'bg-forest-green/10 text-forest-green' : 'bg-red-100 text-red-400'
+                        c.is_active !== false ? 'bg-forest-green/10 text-forest-green' : 'bg-red-100 text-red-400'
                       )}>
                         {c.full_name?.[0]?.toUpperCase() ?? 'U'}
                       </div>
@@ -113,7 +114,7 @@ export default function AdminCustomersPage() {
                     )}
                   </td>
                   <td className="px-5 py-4">
-                    {c.is_active ? (
+                    {c.is_active !== false ? (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-green-50 text-green-600">
                         <ShieldCheck className="w-3 h-3" /> Active
                       </span>
@@ -132,14 +133,14 @@ export default function AdminCustomersPage() {
                       disabled={togglingId === c.id}
                       className={cn(
                         'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50',
-                        c.is_active
+                        c.is_active !== false
                           ? 'bg-red-50 text-red-500 hover:bg-red-100'
                           : 'bg-green-50 text-green-600 hover:bg-green-100'
                       )}
                     >
                       {togglingId === c.id ? (
                         <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      ) : c.is_active ? (
+                      ) : c.is_active !== false ? (
                         <><ShieldOff className="w-3 h-3" /> Block</>
                       ) : (
                         <><ShieldCheck className="w-3 h-3" /> Unblock</>

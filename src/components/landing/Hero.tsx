@@ -31,7 +31,7 @@ export default function Hero() {
       <span className="animate-drift absolute top-[50%] left-[2%] text-3xl opacity-10 select-none pointer-events-none" style={{animationDelay: '3.2s'}}>🌽</span>
       <span className="animate-float absolute top-[45%] right-[15%] text-2xl opacity-8 select-none pointer-events-none" style={{animationDelay: '2.8s'}}>🍑</span>
 
-      <div className="container-app relative z-10 py-16">
+      <div className="container-app relative z-10 py-12 sm:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* ── Left — Text ── */}
           <div className="text-white space-y-6">
@@ -40,7 +40,7 @@ export default function Hero() {
               Fresh Deliveries Every Day
             </div>
 
-            <h1 data-animate className="anim-d1 font-serif text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight" style={{fontWeight: 400}}>
+            <h1 data-animate className="anim-d1 font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight" style={{fontWeight: 400}}>
               Shop Fresh.
               <br />
               <span className="text-sunset-orange drop-shadow-lg">Live Healthy.</span>
@@ -69,7 +69,7 @@ export default function Hero() {
             {/* Trust badges */}
             <div data-animate className="anim-d4 flex flex-wrap gap-5 pt-4">
               {[
-                { icon: Truck, label: 'Free delivery over $50' },
+                { icon: Truck, label: 'Free delivery over ₹50' },
                 { icon: ShieldCheck, label: '100% organic certified' },
                 { icon: Star, label: '4.9★ from 12k reviews' },
               ].map(({ icon: Icon, label }) => (
@@ -88,12 +88,12 @@ export default function Hero() {
               <div className="bg-white/15 backdrop-blur-md border border-white/30 rounded-3xl p-8 w-80 shadow-2xl">
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { emoji: '🍎', name: 'Fresh Apples', price: '$2.49', color: 'bg-red-50' },
-                    { emoji: '🥦', name: 'Broccoli', price: '$1.89', color: 'bg-green-50' },
-                    { emoji: '🥕', name: 'Carrots', price: '$1.29', color: 'bg-orange-50' },
-                    { emoji: '🍋', name: 'Lemons', price: '$3.99', color: 'bg-yellow-50' },
-                    { emoji: '🍇', name: 'Grapes', price: '$4.49', color: 'bg-purple-50' },
-                    { emoji: '🍅', name: 'Tomatoes', price: '$2.19', color: 'bg-red-50' },
+                    { emoji: '🍎', name: 'Fresh Apples', price: '₹199', color: 'bg-red-50' },
+                    { emoji: '🥦', name: 'Broccoli', price: '₹149', color: 'bg-green-50' },
+                    { emoji: '🥕', name: 'Carrots', price: '₹99', color: 'bg-orange-50' },
+                    { emoji: '🍋', name: 'Lemons', price: '₹299', color: 'bg-yellow-50' },
+                    { emoji: '🍇', name: 'Grapes', price: '₹349', color: 'bg-purple-50' },
+                    { emoji: '🍅', name: 'Tomatoes', price: '₹179', color: 'bg-red-50' },
                   ].map((item) => (
                     <div
                       key={item.name}

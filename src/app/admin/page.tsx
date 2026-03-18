@@ -108,7 +108,7 @@ export default async function AdminDashboardPage() {
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   return (
-    <div className="p-6 md:p-8 min-h-screen bg-gray-50/60">
+    <div className="p-4 md:p-8 min-h-screen bg-gray-50/60">
 
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
@@ -130,18 +130,18 @@ export default async function AdminDashboardPage() {
         {stats.map(({ label, value, icon: Icon, gradient, lightBg, iconColor, change }) => (
           <div
             key={label}
-            className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
           >
-            <div className="flex items-start justify-between mb-5">
-              <div className={`w-11 h-11 rounded-xl ${lightBg} flex items-center justify-center`}>
-                <Icon className={`w-5 h-5 ${iconColor}`} />
+            <div className="flex items-start justify-between mb-3 md:mb-5">
+              <div className={`w-9 h-9 md:w-11 md:h-11 rounded-xl ${lightBg} flex items-center justify-center`}>
+                <Icon className={`w-4 h-4 md:w-5 md:h-5 ${iconColor}`} />
               </div>
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                <TrendingUp className="w-2.5 h-2.5" /> {change}
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                <TrendingUp className="w-2 h-2" /> {change}
               </span>
             </div>
-            <p className="text-3xl font-semibold text-gray-900 leading-none mb-1">{value}</p>
-            <p className="text-xs text-gray-400">{label}</p>
+            <p className="text-xl md:text-3xl font-semibold text-gray-900 leading-none mb-1">{value}</p>
+            <p className="text-[11px] md:text-xs text-gray-400">{label}</p>
           </div>
         ))}
       </div>

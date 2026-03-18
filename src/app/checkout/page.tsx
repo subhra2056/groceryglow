@@ -113,7 +113,7 @@ export default function CheckoutPage() {
             <Link href="/shop" className="btn-primary">Browse Products</Link>
           </div>
         </div>
-        <Footer />
+        <Footer hideOnMobile />
       </>
     )
   }
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
             </div>
           </div>
         </main>
-        <Footer />
+        <Footer hideOnMobile />
       </>
     )
   }
@@ -176,7 +176,7 @@ export default function CheckoutPage() {
         {/* Header */}
         <div className="bg-gradient-hero py-10">
           <div className="container-app text-white">
-            <h1 className="text-3xl font-bold">Checkout</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl text-white" style={{fontWeight:400}}>Checkout</h1>
             {/* Steps */}
             <div className="flex items-center gap-4 mt-3">
               {(['address', 'payment'] as const).map((s, i) => (
@@ -240,8 +240,8 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between mt-6">
-                    <Link href="/cart" className="btn-ghost flex items-center gap-2">
+                  <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 mt-6">
+                    <Link href="/cart" className="btn-ghost flex items-center justify-center sm:justify-start gap-2">
                       <ArrowLeft className="w-4 h-4" /> Back to Cart
                     </Link>
                     <button
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                         }
                         setStep('payment')
                       }}
-                      className="btn-secondary"
+                      className="btn-secondary justify-center"
                     >
                       Continue to Payment →
                     </button>
@@ -325,14 +325,14 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-between">
-                    <button onClick={() => setStep('address')} className="btn-ghost flex items-center gap-2">
+                  <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
+                    <button onClick={() => setStep('address')} className="btn-ghost flex items-center justify-center sm:justify-start gap-2">
                       <ArrowLeft className="w-4 h-4" /> Back
                     </button>
                     <button
                       onClick={handlePlaceOrder}
                       disabled={placingOrder}
-                      className="btn-primary"
+                      className="btn-primary justify-center"
                     >
                       {placingOrder ? (
                         <><LoadingSpinner size="sm" /> Placing Order…</>
@@ -382,7 +382,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer hideOnMobile />
     </>
   )
 }

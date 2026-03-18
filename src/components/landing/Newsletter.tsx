@@ -46,7 +46,7 @@ export default function Newsletter() {
               </p>
             </div>
           ) : (
-            <form data-animate onSubmit={handleSubmit} className="flex gap-2 anim-d3">
+            <form data-animate onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 anim-d3">
               <div className="relative flex-1">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -61,7 +61,7 @@ export default function Newsletter() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-5 py-3.5 bg-sunset-orange text-white font-semibold text-sm rounded-xl hover:bg-orange-500 transition-colors disabled:opacity-70 flex-shrink-0 shadow-md"
+                className="flex items-center justify-center gap-2 px-5 py-3.5 bg-sunset-orange text-white font-semibold text-sm rounded-xl hover:bg-orange-500 transition-colors disabled:opacity-70 flex-shrink-0 shadow-md"
               >
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

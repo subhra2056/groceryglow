@@ -8,6 +8,7 @@ import WhyChooseUs from '@/components/landing/WhyChooseUs'
 import Testimonials from '@/components/landing/Testimonials'
 import Newsletter from '@/components/landing/Newsletter'
 import Footer from '@/components/landing/Footer'
+import BackToTop from '@/components/ui/BackToTop'
 
 export default function HomePage() {
   return (
@@ -24,6 +25,7 @@ export default function HomePage() {
         <Newsletter />
       </main>
       <Footer />
+      <BackToTop />
     </>
   )
 }

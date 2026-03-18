@@ -48,8 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, fetchProfile])
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    // Get initial session — if refresh token is stale, sign out cleanly
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error?.message?.includes('Refresh Token')) {
+        supabase.auth.signOut()
+        setLoading(false)
+        return
+      }
       setUser(user)
       if (user) fetchProfile(user.id).finally(() => setLoading(false))
       else setLoading(false)
@@ -58,7 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Gracefully handle expired/invalid refresh tokens
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        supabase.auth.signOut()
+        setUser(null)
+        setProfile(null)
+        return
+      }
       const currentUser = session?.user ?? null
       setUser(currentUser)
       if (currentUser) {

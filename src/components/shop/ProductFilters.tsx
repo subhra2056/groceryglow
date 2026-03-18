@@ -123,7 +123,7 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <label className="text-xs text-gray-400 mb-1 block">Min ($)</label>
+              <label className="text-xs text-gray-400 mb-1 block">Min (₹)</label>
               <input
                 type="number"
                 min={0}
@@ -135,7 +135,7 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
             </div>
             <span className="text-gray-300 mt-4">—</span>
             <div className="flex-1">
-              <label className="text-xs text-gray-400 mb-1 block">Max ($)</label>
+              <label className="text-xs text-gray-400 mb-1 block">Max (₹)</label>
               <input
                 type="number"
                 min={filters.minPrice + 1}
@@ -274,7 +274,7 @@ export default function ProductFilters({ filters, onChange, totalCount }: Produc
       )}
 
       {/* ── Desktop sidebar ── */}
-      <aside className="hidden md:block w-56 flex-shrink-0">
+      <aside className="hidden md:block w-44 lg:w-52 flex-shrink-0">
         <div className="bg-white rounded-2xl p-5 shadow-sm sticky top-24">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-semibold text-charcoal text-sm flex items-center gap-2">

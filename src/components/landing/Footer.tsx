@@ -39,13 +39,13 @@ const socials = [
   { icon: Youtube, href: '#', label: 'YouTube' },
 ]
 
-export default function Footer() {
+export default function Footer({ hideOnMobile = false }: { hideOnMobile?: boolean }) {
   return (
-    <footer className="bg-charcoal text-white">
-      <div className="container-app py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+    <footer className={`bg-charcoal text-white${hideOnMobile ? ' hidden md:block' : ''}`}>
+      <div className="container-app py-10 md:py-16 pb-[88px] md:pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 md:gap-8">
           {/* Brand column */}
-          <div className="md:col-span-2">
+          <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-9 h-9 bg-gradient-to-br from-forest-green to-leaf-green rounded-xl flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-white" />
@@ -74,24 +74,28 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links columns */}
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h4 className="font-semibold text-white text-sm mb-4">{title}</h4>
-              <ul className="space-y-2.5">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-400 text-sm hover:text-leaf-green transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Links columns — 2-col grid on mobile, individual cols on desktop */}
+          <div className="col-span-1 md:contents">
+            <div className="grid grid-cols-2 gap-6 md:contents">
+              {Object.entries(footerLinks).map(([title, links]) => (
+                <div key={title} className="md:col-span-1">
+                  <h4 className="font-semibold text-white text-sm mb-3 md:mb-4">{title}</h4>
+                  <ul className="space-y-2 md:space-y-2.5">
+                    {links.map((link) => (
+                      <li key={link.label}>
+                        <Link
+                          href={link.href}
+                          className="text-gray-400 text-xs md:text-sm hover:text-leaf-green transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Bottom bar */}
