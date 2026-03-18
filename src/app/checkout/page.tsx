@@ -68,7 +68,10 @@ export default function CheckoutPage() {
     discount_amount: number
     min_order_amount: number
     code: string
-  } | null>(null)
+  } | null>(() => {
+    if (typeof window === 'undefined') return null
+    try { return JSON.parse(sessionStorage.getItem('cart_coupon') ?? 'null') } catch { return null }
+  })
   const [couponError, setCouponError] = useState<string | null>(null)
   const [couponLoading, setCouponLoading] = useState(false)
   const [showCouponPicker, setShowCouponPicker] = useState(false)
@@ -287,8 +290,9 @@ export default function CheckoutPage() {
       }
     }
 
-    // Clear the cart
+    // Clear the cart and saved coupon
     await clearCart()
+    sessionStorage.removeItem('cart_coupon')
 
     setOrderId(order.id)
     setOrderNumber(number)
