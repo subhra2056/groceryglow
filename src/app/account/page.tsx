@@ -101,7 +101,7 @@ function AccountContent() {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<Tab>((searchParams.get('tab') as Tab) ?? 'profile')
   const { user, profile, signOut, refreshProfile } = useAuth()
-  const { notifications, markAsRead, markAllAsRead, unreadCount } = useNotifications()
+  const { notifications, markAsRead, markAllAsRead, unreadCount, clearAll } = useNotifications()
   const router = useRouter()
 
   const [orders, setOrders] = useState<Order[]>([])
