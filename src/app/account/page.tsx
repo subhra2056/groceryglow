@@ -449,13 +449,13 @@ function AccountContent() {
 
             {/* Stats strip */}
             <div className="flex gap-2.5 mt-5">
-              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10 w-40 sm:w-48 flex-shrink-0">
                 <p className="text-white/45 text-[9px] font-bold uppercase tracking-[0.14em] mb-1">Member Since</p>
                 <p className="text-white font-semibold text-sm">
                   {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—'}
                 </p>
               </div>
-              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10 w-40 sm:w-48 flex-shrink-0">
                 <p className="text-white/45 text-[9px] font-bold uppercase tracking-[0.14em] mb-1">Phone</p>
                 <p className="text-white font-semibold text-sm truncate">{profile?.phone ?? 'Not set'}</p>
               </div>
