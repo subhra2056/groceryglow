@@ -79,7 +79,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
   return (
     <div className="card group flex flex-col h-full">
       {/* ── Image ── */}
-      <div className="relative bg-gray-50 h-28 sm:h-36 flex items-center justify-center overflow-hidden flex-shrink-0 rounded-t-2xl">
+      <div className="relative bg-gray-50 h-28 sm:h-32 flex items-center justify-center overflow-hidden flex-shrink-0 rounded-t-2xl">
         <Image
           src={productImage(product.images)}
           alt={product.name}
@@ -129,7 +129,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
 
         {/* Name — 2-line clamp, fixed min-height keeps rows aligned */}
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug mt-0.5 min-h-[2rem] sm:min-h-[2.5rem]">
+          <h3 className="text-xs sm:text-sm font-semibold text-charcoal hover:text-forest-green transition-colors line-clamp-2 leading-snug mt-0.5 min-h-[2rem]">
             {product.name}
           </h3>
         </Link>
@@ -147,7 +147,7 @@ export default function ProductCard({ product, wishlisted = false, onWishlistTog
         </div>
 
         {/* Price + ADD — pinned to bottom */}
-        <div className="flex items-center justify-between mt-auto pt-2 gap-1">
+        <div className="flex items-center justify-between mt-2 gap-1">
           <div className="min-w-0">
             <span className="text-forest-green font-extrabold text-sm leading-none">{formatPrice(price)}</span>
             {hasDiscount && (
