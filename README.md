@@ -83,10 +83,10 @@ Open [http://localhost:3000](http://localhost:3000)
 ## 👤 Admin Access
 
 After running the schema, create an admin user:
-1. Sign up at `/auth/signup` with `admin@groceryglow.com`
+1. Sign up at `/auth/signup` with `admin@gmail.com`
 2. In Supabase SQL Editor run:
 ```sql
-UPDATE profiles SET role = 'admin' WHERE email = 'admin@groceryglow.com';
+UPDATE profiles SET role = 'admin' WHERE email = 'admin@gmail.com';
 ```
 
 ---
