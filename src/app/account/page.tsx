@@ -408,51 +408,57 @@ function AccountContent() {
     <>
       <Navbar />
       <main className="min-h-screen bg-cream pb-16">
-        {/* ── Fancy Profile Hero ── */}
-        <div className="bg-gradient-hero relative overflow-hidden py-8 sm:py-10">
-          {/* Decorative blobs */}
-          <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full pointer-events-none" />
-          <div className="absolute -bottom-8 -left-8 w-36 h-36 bg-white/5 rounded-full pointer-events-none" />
-          <div className="absolute top-4 right-1/3 w-20 h-20 bg-white/5 rounded-full pointer-events-none" />
+        {/* ── Profile Hero ── */}
+        <div className="bg-gradient-hero relative overflow-hidden pb-10 pt-8 sm:pt-10">
+          {/* Decorative rings */}
+          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full border border-white/10 pointer-events-none" />
+          <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full border border-white/8 pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-52 h-52 rounded-full border border-white/10 pointer-events-none" />
+          <div className="absolute bottom-6 right-1/4 w-6 h-6 bg-white/10 rounded-full pointer-events-none" />
+          <div className="absolute top-6 left-1/3 w-3 h-3 bg-white/15 rounded-full pointer-events-none" />
 
           <div className="container-app relative z-10">
-            <div className="flex items-center gap-4 sm:gap-5">
-              {/* Avatar with ring */}
+            <div className="flex items-end gap-4 sm:gap-5">
+              {/* Avatar */}
               <div className="relative flex-shrink-0">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center text-3xl sm:text-4xl font-black text-white shadow-lg">
-                  {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-white/30 to-white/10 border-[3px] border-white/50 flex items-center justify-center shadow-xl">
+                  <span className="font-serif text-3xl sm:text-4xl text-white font-normal" style={{lineHeight:1}}>
+                    {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
+                  </span>
                 </div>
-                <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full" />
+                {/* Online dot */}
+                <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full shadow" />
               </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <p className="text-white/60 text-xs font-medium tracking-wide">Welcome back 👋</p>
-                <h1 className="text-white font-bold text-2xl sm:text-3xl truncate mt-0.5">
-                  {profile?.full_name ?? 'My Account'}
+              {/* Text */}
+              <div className="flex-1 min-w-0 pb-1">
+                <p className="text-white/55 text-xs tracking-[0.12em] uppercase font-medium mb-1">My Account</p>
+                <h1 className="font-serif text-white leading-tight truncate" style={{fontSize:'clamp(1.6rem,5vw,2.2rem)', fontWeight:400}}>
+                  {profile?.full_name ?? 'Hello there'}
                 </h1>
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
-                  <span className="text-[11px] font-bold uppercase tracking-widest bg-white/20 text-white px-2.5 py-1 rounded-full">
+                  <span className="text-[10px] font-bold tracking-[0.15em] uppercase bg-white/20 backdrop-blur-sm text-white px-2.5 py-1 rounded-full border border-white/20">
                     {profile?.role ?? 'customer'}
                   </span>
                   {profile?.email && (
-                    <span className="text-white/50 text-xs truncate max-w-[160px]">{profile.email}</span>
+                    <span className="text-white/45 text-[11px] truncate max-w-[150px] sm:max-w-xs">{profile.email}</span>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Stats strip */}
-            <div className="flex gap-3 mt-5">
-              {[
-                { label: 'Member since', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—' },
-                { label: 'Phone', value: profile?.phone ?? 'Not set' },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-3">
-                  <p className="text-white/50 text-[10px] font-semibold uppercase tracking-wider">{label}</p>
-                  <p className="text-white font-semibold text-xs sm:text-sm mt-0.5 truncate">{value}</p>
-                </div>
-              ))}
+            <div className="flex gap-2.5 mt-5">
+              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10">
+                <p className="text-white/45 text-[9px] font-bold uppercase tracking-[0.14em] mb-1">Member Since</p>
+                <p className="text-white font-semibold text-sm">
+                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—'}
+                </p>
+              </div>
+              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/10">
+                <p className="text-white/45 text-[9px] font-bold uppercase tracking-[0.14em] mb-1">Phone</p>
+                <p className="text-white font-semibold text-sm truncate">{profile?.phone ?? 'Not set'}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -524,71 +530,74 @@ function AccountContent() {
                 <div className="space-y-4">
                   {/* Profile card */}
                   <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    {/* Fields */}
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="font-bold text-charcoal text-base">Personal Info</h2>
-                        {!editing && (
-                          <button
-                            onClick={() => { setEditing(true); setProfileError(null) }}
-                            className="flex items-center gap-1.5 text-xs font-semibold text-forest-green bg-forest-green/8 hover:bg-forest-green/15 px-3 py-1.5 rounded-xl transition-colors"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" /> Edit
-                          </button>
-                        )}
-                      </div>
-                      {profileError && (
-                        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
-                          {profileError}
-                        </div>
+                    <div className="px-5 pt-5 pb-1 flex items-center justify-between">
+                      <h2 className="font-serif text-lg text-charcoal" style={{fontWeight:400}}>Personal Info</h2>
+                      {!editing && (
+                        <button
+                          onClick={() => { setEditing(true); setProfileError(null) }}
+                          className="flex items-center gap-1.5 text-xs font-semibold text-forest-green hover:text-forest-green/80 transition-colors"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" /> Edit profile
+                        </button>
                       )}
+                    </div>
 
-                      <div className="space-y-3">
-                        {[
-                          { label: 'Full Name', key: 'full_name' as const, value: profile?.full_name ?? '', editable: true, icon: User },
-                          { label: 'Email Address', key: 'email' as const, value: profile?.email ?? '', editable: false, icon: Bell },
-                          { label: 'Phone Number', key: 'phone' as const, value: profile?.phone ?? '', editable: true, icon: ClipboardList },
-                        ].map(({ label, key, value, editable, icon: FieldIcon }) => (
-                          <div key={key}>
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
-                            {editing && editable && key !== 'email' ? (
-                              <input
-                                value={editForm[key as keyof typeof editForm] ?? ''}
-                                onChange={(e) => {
-                                  const val = key === 'phone'
-                                    ? e.target.value.replace(/\D/g, '').slice(0, 15)
-                                    : e.target.value
-                                  setEditForm((f) => ({ ...f, [key]: val }))
-                                }}
-                                placeholder={key === 'phone' ? 'Digits only, 7–15 numbers' : undefined}
-                                inputMode={key === 'phone' ? 'numeric' : undefined}
-                                className="input text-sm"
-                              />
-                            ) : (
-                              <div className="flex items-center gap-2.5 py-2.5 px-3.5 bg-gray-50 rounded-xl">
-                                <FieldIcon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                                <span className="text-sm font-medium text-charcoal">
-                                  {value || <span className="text-gray-300">—</span>}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                    {profileError && (
+                      <div className="mx-5 mt-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
+                        {profileError}
                       </div>
+                    )}
 
-                      {editing && (
-                        <div className="flex gap-2 mt-4">
-                          <button onClick={saveProfile} disabled={savingProfile} className="btn-secondary text-sm py-2 flex-1 justify-center">
-                            <Save className="w-3.5 h-3.5" /> {savingProfile ? 'Saving…' : 'Save Changes'}
-                          </button>
-                          <button onClick={() => setEditing(false)} className="btn-ghost text-sm py-2 px-4">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
+                    <div className="mt-3">
+                      {[
+                        { label: 'Full Name', key: 'full_name' as const, value: profile?.full_name ?? '', editable: true, icon: User },
+                        { label: 'Email Address', key: 'email' as const, value: profile?.email ?? '', editable: false, icon: Bell },
+                        { label: 'Phone Number', key: 'phone' as const, value: profile?.phone ?? '', editable: true, icon: ClipboardList },
+                      ].map(({ label, key, value, editable, icon: FieldIcon }, idx, arr) => (
+                        <div key={key} className={`px-5 py-3.5 ${idx < arr.length - 1 ? 'border-b border-gray-50' : ''}`}>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-1.5">{label}</p>
+                          {editing && editable && key !== 'email' ? (
+                            <input
+                              value={editForm[key as keyof typeof editForm] ?? ''}
+                              onChange={(e) => {
+                                const val = key === 'phone'
+                                  ? e.target.value.replace(/\D/g, '').slice(0, 15)
+                                  : e.target.value
+                                setEditForm((f) => ({ ...f, [key]: val }))
+                              }}
+                              placeholder={key === 'phone' ? 'Digits only, 7–15 numbers' : undefined}
+                              inputMode={key === 'phone' ? 'numeric' : undefined}
+                              className="input text-sm"
+                            />
+                          ) : (
+                            <div className="flex items-center gap-2.5">
+                              <FieldIcon className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+                              <span className={`text-[15px] font-medium ${value ? 'text-charcoal' : 'text-gray-300'}`}>
+                                {value || '—'}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ))}
+                    </div>
 
-                      <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100">
-                        Member since {profile?.created_at ? formatDate(profile.created_at) : '—'}
+                    {editing && (
+                      <div className="flex gap-2 px-5 pb-5 pt-3">
+                        <button onClick={saveProfile} disabled={savingProfile} className="btn-secondary text-sm py-2 flex-1 justify-center">
+                          <Save className="w-3.5 h-3.5" /> {savingProfile ? 'Saving…' : 'Save Changes'}
+                        </button>
+                        <button onClick={() => setEditing(false)} className="btn-ghost text-sm py-2 px-4">
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="px-5 py-3 border-t border-gray-50">
+                      <p className="text-[11px] text-gray-400 tracking-wide">
+                        Member since{' '}
+                        <span className="text-gray-500 font-medium">
+                          {profile?.created_at ? formatDate(profile.created_at) : '—'}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -597,9 +606,14 @@ function AccountContent() {
                   <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                     <button
                       onClick={() => { setShowChangePassword((v) => !v); setPwError(null); setPwSuccess(false) }}
-                      className="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-charcoal hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50/60 transition-colors"
                     >
-                      <span className="flex items-center gap-2.5"><KeyRound className="w-4 h-4 text-forest-green" /> Change Password</span>
+                      <span className="flex items-center gap-3 font-serif text-base text-charcoal" style={{fontWeight:400}}>
+                        <span className="w-8 h-8 rounded-xl bg-forest-green/10 flex items-center justify-center flex-shrink-0">
+                          <KeyRound className="w-4 h-4 text-forest-green" />
+                        </span>
+                        Change Password
+                      </span>
                       <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showChangePassword ? 'rotate-180' : ''}`} />
                     </button>
                     {showChangePassword && (
