@@ -1,11 +1,11 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft, Ticket, ChevronDown, ChevronUp } from 'lucide-react'
+import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft, Ticket, ChevronDown, ChevronUp, Plus, Home, Briefcase, MoreHorizontal } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/landing/Footer'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -17,6 +17,32 @@ import type { CheckoutFormData } from '@/types'
 
 type Step = 'address' | 'payment' | 'success'
 
+interface UserAddress {
+  id: string
+  label: string
+  full_name: string
+  phone: string
+  address_line_1: string
+  address_line_2: string | null
+  city: string
+  state: string
+  postal_code: string
+  country: string
+  is_default: boolean
+}
+
+const LABEL_STYLES: Record<string, string> = {
+  Home: 'bg-blue-100 text-blue-700',
+  Work: 'bg-purple-100 text-purple-700',
+  Other: 'bg-gray-100 text-gray-600',
+}
+
+const LABEL_ICONS: Record<string, typeof Home> = {
+  Home: Home,
+  Work: Briefcase,
+  Other: MoreHorizontal,
+}
+
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart()
   const { user, profile } = useAuth()
@@ -26,6 +52,14 @@ export default function CheckoutPage() {
   const [placingOrder, setPlacingOrder] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [orderNumber, setOrderNumber] = useState<string>('')
+
+  // Saved addresses state
+  const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([])
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false)
+  const [loadingAddresses, setLoadingAddresses] = useState(true)
+  const [saveAddress, setSaveAddress] = useState(true)
+  const [newAddressLabel, setNewAddressLabel] = useState<'Home' | 'Work' | 'Other'>('Home')
 
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{
@@ -64,6 +98,32 @@ export default function CheckoutPage() {
 
   const update = (field: keyof CheckoutFormData, value: string) =>
     setForm((f) => ({ ...f, [field]: value }))
+
+  // Fetch saved addresses on mount
+  useEffect(() => {
+    if (!user) return
+    const fetchAddresses = async () => {
+      setLoadingAddresses(true)
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('user_addresses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('is_default', { ascending: false })
+        .order('created_at', { ascending: false })
+      const addresses = data ?? []
+      setSavedAddresses(addresses)
+      // Pre-select default or first address
+      if (addresses.length > 0) {
+        const def = addresses.find((a) => a.is_default) ?? addresses[0]
+        setSelectedAddressId(def.id)
+      } else {
+        setShowNewAddressForm(true)
+      }
+      setLoadingAddresses(false)
+    }
+    fetchAddresses()
+  }, [user])
 
   const handleApplyCoupon = async (codeOverride?: string) => {
     const code = (codeOverride ?? couponCode).trim().toUpperCase()
@@ -110,6 +170,56 @@ export default function CheckoutPage() {
     } finally {
       setFetchingCoupons(false)
     }
+  }
+
+  // Handle "Continue to Payment" click on address step
+  const handleAddressContinue = async () => {
+    if (savedAddresses.length > 0 && selectedAddressId && !showNewAddressForm) {
+      // Using a saved address — fill form from it
+      const addr = savedAddresses.find((a) => a.id === selectedAddressId)
+      if (addr) {
+        setForm((f) => ({
+          ...f,
+          full_name: addr.full_name,
+          phone: addr.phone,
+          address_line_1: addr.address_line_1,
+          address_line_2: addr.address_line_2 ?? '',
+          city: addr.city,
+          state: addr.state,
+          postal_code: addr.postal_code,
+          country: addr.country,
+        }))
+      }
+      setStep('payment')
+      return
+    }
+
+    // Using the new address form
+    if (!form.full_name || !form.address_line_1 || !form.city || !form.state || !form.postal_code) {
+      alert('Please fill in all required fields.')
+      return
+    }
+
+    // Save address if requested
+    if (saveAddress && user) {
+      const supabase = createClient()
+      const isFirst = savedAddresses.length === 0
+      await supabase.from('user_addresses').insert({
+        user_id: user.id,
+        label: newAddressLabel,
+        full_name: form.full_name,
+        phone: form.phone,
+        address_line_1: form.address_line_1,
+        address_line_2: form.address_line_2 || null,
+        city: form.city,
+        state: form.state,
+        postal_code: form.postal_code,
+        country: form.country,
+        is_default: isFirst,
+      })
+    }
+
+    setStep('payment')
   }
 
   const handlePlaceOrder = async () => {
@@ -295,53 +405,172 @@ export default function CheckoutPage() {
                     Delivery Address
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Full Name *</label>
-                      <input value={form.full_name} onChange={(e) => update('full_name', e.target.value)} className="input" placeholder="Enter your full name" required />
+                  {loadingAddresses ? (
+                    <div className="flex justify-center py-10">
+                      <LoadingSpinner size="lg" />
                     </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Phone *</label>
-                      <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className="input" placeholder="Enter your phone number" required />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 1 *</label>
-                      <input value={form.address_line_1} onChange={(e) => update('address_line_1', e.target.value)} className="input" placeholder="Enter your street address" required />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 2 (optional)</label>
-                      <input value={form.address_line_2} onChange={(e) => update('address_line_2', e.target.value)} className="input" placeholder="Flat no., building, landmark (optional)" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">City *</label>
-                      <input value={form.city} onChange={(e) => update('city', e.target.value)} className="input" placeholder="Enter your city" required />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">State *</label>
-                      <input value={form.state} onChange={(e) => update('state', e.target.value)} className="input" placeholder="Enter your state" required />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Postal Code *</label>
-                      <input value={form.postal_code} onChange={(e) => update('postal_code', e.target.value)} className="input" placeholder="Enter your PIN code" required />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 mb-1.5 block">Country *</label>
-                      <input value={form.country} onChange={(e) => update('country', e.target.value)} className="input" placeholder="Enter your country" required />
-                    </div>
-                  </div>
+                  ) : (
+                    <>
+                      {/* Saved address cards */}
+                      {savedAddresses.length > 0 && (
+                        <div className="space-y-3 mb-5">
+                          {savedAddresses.map((addr) => {
+                            const LabelIcon = LABEL_ICONS[addr.label] ?? MoreHorizontal
+                            const isSelected = selectedAddressId === addr.id && !showNewAddressForm
+                            return (
+                              <button
+                                key={addr.id}
+                                type="button"
+                                onClick={() => { setSelectedAddressId(addr.id); setShowNewAddressForm(false) }}
+                                className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                                  isSelected
+                                    ? 'border-forest-green bg-green-50/30'
+                                    : 'border-gray-100 hover:border-forest-green/40 bg-white'
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  {/* Radio indicator */}
+                                  <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                                    isSelected ? 'border-forest-green' : 'border-gray-300'
+                                  }`}>
+                                    {isSelected && <div className="w-2 h-2 rounded-full bg-forest-green" />}
+                                  </div>
+
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                                      <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${LABEL_STYLES[addr.label] ?? LABEL_STYLES.Other}`}>
+                                        <LabelIcon className="w-3 h-3" />
+                                        {addr.label}
+                                      </span>
+                                      {addr.is_default && (
+                                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                                          Default
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-sm font-semibold text-charcoal">{addr.full_name}</p>
+                                    {addr.phone && <p className="text-xs text-gray-500 mt-0.5">{addr.phone}</p>}
+                                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                                      {addr.address_line_1}
+                                      {addr.address_line_2 && `, ${addr.address_line_2}`}
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                      {addr.city}, {addr.state} — {addr.postal_code}
+                                    </p>
+                                    <p className="text-xs text-gray-400">{addr.country}</p>
+                                  </div>
+                                </div>
+                              </button>
+                            )
+                          })}
+
+                          {/* Add new address toggle */}
+                          <button
+                            type="button"
+                            onClick={() => { setShowNewAddressForm((v) => !v); setSelectedAddressId(null) }}
+                            className={`w-full flex items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-medium ${
+                              showNewAddressForm
+                                ? 'border-forest-green bg-green-50/30 text-forest-green'
+                                : 'border-dashed border-gray-200 text-gray-500 hover:border-forest-green/50 hover:text-forest-green'
+                            }`}
+                          >
+                            <Plus className="w-4 h-4" />
+                            {showNewAddressForm ? 'Cancel — use saved address' : 'Add a new address'}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* New address form — shown when no saved addresses OR when user clicks add new */}
+                      {(savedAddresses.length === 0 || showNewAddressForm) && (
+                        <div className={savedAddresses.length > 0 ? 'border border-gray-100 rounded-xl p-4 bg-gray-50/40' : ''}>
+                          {/* Label chips */}
+                          <div className="mb-4">
+                            <label className="text-xs font-medium text-gray-600 mb-2 block">Address Label</label>
+                            <div className="flex gap-2">
+                              {(['Home', 'Work', 'Other'] as const).map((lbl) => {
+                                const LblIcon = LABEL_ICONS[lbl]
+                                return (
+                                  <button
+                                    key={lbl}
+                                    type="button"
+                                    onClick={() => setNewAddressLabel(lbl)}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                                      newAddressLabel === lbl
+                                        ? lbl === 'Home'
+                                          ? 'bg-blue-100 text-blue-700 border-blue-300'
+                                          : lbl === 'Work'
+                                          ? 'bg-purple-100 text-purple-700 border-purple-300'
+                                          : 'bg-gray-200 text-gray-700 border-gray-400'
+                                        : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'
+                                    }`}
+                                  >
+                                    <LblIcon className="w-3 h-3" />
+                                    {lbl}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Full Name *</label>
+                              <input value={form.full_name} onChange={(e) => update('full_name', e.target.value)} className="input" placeholder="Enter your full name" required />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Phone *</label>
+                              <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className="input" placeholder="Enter your phone number" required />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 1 *</label>
+                              <input value={form.address_line_1} onChange={(e) => update('address_line_1', e.target.value)} className="input" placeholder="Enter your street address" required />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Address Line 2 (optional)</label>
+                              <input value={form.address_line_2} onChange={(e) => update('address_line_2', e.target.value)} className="input" placeholder="Flat no., building, landmark (optional)" />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">City *</label>
+                              <input value={form.city} onChange={(e) => update('city', e.target.value)} className="input" placeholder="Enter your city" required />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">State *</label>
+                              <input value={form.state} onChange={(e) => update('state', e.target.value)} className="input" placeholder="Enter your state" required />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Postal Code *</label>
+                              <input value={form.postal_code} onChange={(e) => update('postal_code', e.target.value)} className="input" placeholder="Enter your PIN code" required />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1.5 block">Country *</label>
+                              <input value={form.country} onChange={(e) => update('country', e.target.value)} className="input" placeholder="Enter your country" required />
+                            </div>
+                          </div>
+
+                          {/* Save address checkbox */}
+                          <label className="flex items-center gap-2.5 mt-4 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={saveAddress}
+                              onChange={(e) => setSaveAddress(e.target.checked)}
+                              className="w-4 h-4 rounded accent-forest-green"
+                            />
+                            <span className="text-sm text-gray-600 group-hover:text-charcoal transition-colors">
+                              Save this address for future orders
+                            </span>
+                          </label>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 mt-6">
                     <Link href="/cart" className="btn-ghost flex items-center justify-center sm:justify-start gap-2">
                       <ArrowLeft className="w-4 h-4" /> Back to Cart
                     </Link>
                     <button
-                      onClick={() => {
-                        if (!form.full_name || !form.address_line_1 || !form.city || !form.state || !form.postal_code) {
-                          alert('Please fill in all required fields.')
-                          return
-                        }
-                        setStep('payment')
-                      }}
+                      onClick={handleAddressContinue}
+                      disabled={loadingAddresses}
                       className="btn-secondary justify-center"
                     >
                       Continue to Payment →

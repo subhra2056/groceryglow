@@ -484,3 +484,24 @@ GRANT SELECT, INSERT ON coupon_uses TO authenticated;
 INSERT INTO coupons (code, user_id, discount_amount, min_order_amount, is_active)
 VALUES ('NEWBIE100', NULL, 100.00, 400.00, true)
 ON CONFLICT DO NOTHING;
+
+-- ── User Addresses ───────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS user_addresses (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  label text NOT NULL DEFAULT 'Home',
+  full_name text NOT NULL,
+  phone text,
+  address_line_1 text NOT NULL,
+  address_line_2 text,
+  city text NOT NULL,
+  state text NOT NULL,
+  postal_code text NOT NULL,
+  country text NOT NULL DEFAULT 'India',
+  is_default boolean DEFAULT false,
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE user_addresses ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users manage own addresses" ON user_addresses
+  FOR ALL USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+GRANT SELECT, INSERT, UPDATE, DELETE ON user_addresses TO authenticated;
