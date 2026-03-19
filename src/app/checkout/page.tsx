@@ -2,7 +2,6 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, CreditCard, Wallet, CheckCircle2, ArrowLeft, Ticket, ChevronDown, ChevronUp, Plus, Home, Briefcase, MoreHorizontal } from 'lucide-react'
@@ -46,11 +45,9 @@ const LABEL_ICONS: Record<string, typeof Home> = {
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart()
   const { user, profile } = useAuth()
-  const router = useRouter()
 
   const [step, setStep] = useState<Step>('address')
   const [placingOrder, setPlacingOrder] = useState(false)
-  const [orderId, setOrderId] = useState<string | null>(null)
   const [orderNumber, setOrderNumber] = useState<string>('')
   const [placedOrderSummary, setPlacedOrderSummary] = useState<{
     subtotal: number
@@ -302,7 +299,6 @@ export default function CheckoutPage() {
     await clearCart()
     sessionStorage.removeItem('cart_coupon')
 
-    setOrderId(order.id)
     setOrderNumber(number)
     setPlacedOrderSummary({
       subtotal: order.subtotal,

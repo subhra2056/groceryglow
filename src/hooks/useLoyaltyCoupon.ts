@@ -61,5 +61,5 @@ export function useLoyaltyCoupon(user: User | null) {
     }
 
     run()
-  }, [user?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user?.id])
 }

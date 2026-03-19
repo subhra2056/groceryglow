@@ -14,7 +14,7 @@ import {
   XCircle,
   PackageCheck,
 } from 'lucide-react'
-import { formatPrice, ORDER_STATUS_COLORS } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
 
 async function getStats() {
   const supabase = await createClient()
@@ -127,7 +127,7 @@ export default async function AdminDashboardPage() {
 
       {/* ── Stat cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {stats.map(({ label, value, icon: Icon, gradient, lightBg, iconColor, change }) => (
+        {stats.map(({ label, value, icon: Icon, lightBg, iconColor, change }) => (
           <div
             key={label}
             className="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"

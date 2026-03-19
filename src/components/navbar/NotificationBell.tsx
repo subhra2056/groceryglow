@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Bell, X, ShoppingCart, Package, Check, CheckCheck } from 'lucide-react'
+import { Bell, X, ShoppingCart, Package, CheckCheck } from 'lucide-react'
 import { useNotifications, type AppNotification } from '@/contexts/NotificationContext'
 import { useCartReminder } from '@/hooks/useCartReminder'
 import { cn } from '@/lib/utils'

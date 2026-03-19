@@ -4,7 +4,6 @@ import { useState, useRef } from 'react'
 import { X, Bug, Send, ImageIcon, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
-import { cn } from '@/lib/utils'
 
 export default function BugReportModal({ onClose }: { onClose: () => void }) {
   const { user } = useAuth()

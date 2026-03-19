@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, Suspense, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
   User,
@@ -109,48 +109,43 @@ function AccountContent() {
   const [addressError, setAddressError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!user) return
-    if (activeTab === 'orders') loadOrders()
-    if (activeTab === 'wishlist') loadWishlist()
-    if (activeTab === 'coupons') loadCoupons()
-    if (activeTab === 'addresses') loadAddresses()
-  }, [activeTab, user])
-
-  useEffect(() => {
     if (profile) setEditForm({ full_name: profile.full_name ?? '', phone: profile.phone ?? '' })
   }, [profile])
 
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
+    if (!user) return
     setDataLoading(true)
     const supabase = createClient()
     const { data } = await supabase
       .from('orders')
       .select('*, items:order_items(*)')
-      .eq('user_id', user!.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
     setOrders(data ?? [])
     setDataLoading(false)
-  }
+  }, [user])
 
-  const loadWishlist = async () => {
+  const loadWishlist = useCallback(async () => {
+    if (!user) return
     setDataLoading(true)
     const supabase = createClient()
     const { data } = await supabase
       .from('wishlists')
       .select('*, product:products(*, category:categories(*))')
-      .eq('user_id', user!.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
     setWishlist(data ?? [])
     setDataLoading(false)
-  }
+  }, [user])
 
-  const loadCoupons = async () => {
+  const loadCoupons = useCallback(async () => {
+    if (!user) return
     setDataLoading(true)
     const supabase = createClient()
     const { data } = await supabase
       .from('coupons')
       .select('*')
-      .or(`user_id.eq.${user!.id},user_id.is.null`)
+      .or(`user_id.eq.${user.id},user_id.is.null`)
       .order('created_at', { ascending: false })
 
     const globalCouponIds = (data ?? [])
@@ -162,7 +157,7 @@ function AccountContent() {
       const { data: couponUses } = await supabase
         .from('coupon_uses')
         .select('coupon_id')
-        .eq('user_id', user!.id)
+        .eq('user_id', user.id)
         .in('coupon_id', globalCouponIds)
 
       usedGlobalCouponIds = new Set((couponUses ?? []).map((entry) => entry.coupon_id))
@@ -177,20 +172,29 @@ function AccountContent() {
       }))
     )
     setDataLoading(false)
-  }
+  }, [user])
 
-  const loadAddresses = async () => {
+  const loadAddresses = useCallback(async () => {
+    if (!user) return
     setDataLoading(true)
     const supabase = createClient()
     const { data } = await supabase
       .from('user_addresses')
       .select('*')
-      .eq('user_id', user!.id)
+      .eq('user_id', user.id)
       .order('is_default', { ascending: false })
       .order('created_at', { ascending: false })
     setAddresses(data ?? [])
     setDataLoading(false)
-  }
+  }, [user])
+
+  useEffect(() => {
+    if (!user) return
+    if (activeTab === 'orders') void loadOrders()
+    if (activeTab === 'wishlist') void loadWishlist()
+    if (activeTab === 'coupons') void loadCoupons()
+    if (activeTab === 'addresses') void loadAddresses()
+  }, [activeTab, user, loadOrders, loadWishlist, loadCoupons, loadAddresses])
 
   const handleSaveAddress = async () => {
     if (!addressForm.full_name.trim() || !addressForm.address_line_1.trim() || !addressForm.city.trim() || !addressForm.state.trim() || !addressForm.postal_code.trim()) {

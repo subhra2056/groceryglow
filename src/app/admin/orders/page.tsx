@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, useCallback } from 'react'
 import { Search, ChevronDown, ClipboardList } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { formatPrice, formatDate, ORDER_STATUS_COLORS, PAYMENT_STATUS_COLORS, cn } from '@/lib/utils'
+import { formatPrice, formatDate, ORDER_STATUS_COLORS, cn } from '@/lib/utils'
 import type { Order, OrderStatus } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 

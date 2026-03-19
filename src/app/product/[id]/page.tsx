@@ -13,7 +13,6 @@ import {
   Truck,
   ShieldCheck,
   RotateCcw,
-  ChevronLeft,
   Leaf,
 } from 'lucide-react'
 import Navbar from '@/components/navbar/Navbar'
