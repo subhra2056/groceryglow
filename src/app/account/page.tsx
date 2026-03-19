@@ -150,9 +150,32 @@ function AccountContent() {
     const { data } = await supabase
       .from('coupons')
       .select('*')
-      .eq('user_id', user!.id)
+      .or(`user_id.eq.${user!.id},user_id.is.null`)
       .order('created_at', { ascending: false })
-    setCoupons(data ?? [])
+
+    const globalCouponIds = (data ?? [])
+      .filter((coupon) => coupon.user_id === null)
+      .map((coupon) => coupon.id)
+
+    let usedGlobalCouponIds = new Set<string>()
+    if (globalCouponIds.length > 0) {
+      const { data: couponUses } = await supabase
+        .from('coupon_uses')
+        .select('coupon_id')
+        .eq('user_id', user!.id)
+        .in('coupon_id', globalCouponIds)
+
+      usedGlobalCouponIds = new Set((couponUses ?? []).map((entry) => entry.coupon_id))
+    }
+
+    setCoupons(
+      (data ?? []).map((coupon) => ({
+        ...coupon,
+        is_used: coupon.user_id === null
+          ? usedGlobalCouponIds.has(coupon.id)
+          : coupon.is_used,
+      }))
+    )
     setDataLoading(false)
   }
 

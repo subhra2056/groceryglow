@@ -52,6 +52,14 @@ export default function CheckoutPage() {
   const [placingOrder, setPlacingOrder] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [orderNumber, setOrderNumber] = useState<string>('')
+  const [placedOrderSummary, setPlacedOrderSummary] = useState<{
+    subtotal: number
+    deliveryFee: number
+    discount: number
+    total: number
+    couponCode: string | null
+    paymentMethod: string
+  } | null>(null)
 
   // Saved addresses state
   const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([])
@@ -296,6 +304,14 @@ export default function CheckoutPage() {
 
     setOrderId(order.id)
     setOrderNumber(number)
+    setPlacedOrderSummary({
+      subtotal: order.subtotal,
+      deliveryFee: order.delivery_fee,
+      discount: order.discount,
+      total: order.total,
+      couponCode: appliedCoupon?.code ?? null,
+      paymentMethod: order.payment_method,
+    })
     setPlacingOrder(false)
     setStep('success')
   }
@@ -336,25 +352,25 @@ export default function CheckoutPage() {
             <div className="bg-gray-50 rounded-2xl p-4 text-left mb-6 text-sm space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-400">Subtotal</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span>{formatPrice(placedOrderSummary?.subtotal ?? 0)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Delivery</span>
-                <span>{DELIVERY_FEE === 0 ? 'FREE' : formatPrice(DELIVERY_FEE)}</span>
+                <span>{(placedOrderSummary?.deliveryFee ?? 0) === 0 ? 'FREE' : formatPrice(placedOrderSummary?.deliveryFee ?? 0)}</span>
               </div>
-              {appliedDiscount > 0 && (
+              {(placedOrderSummary?.discount ?? 0) > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Coupon ({appliedCoupon!.code})</span>
-                  <span>-{formatPrice(appliedDiscount)}</span>
+                  <span>Coupon ({placedOrderSummary?.couponCode ?? 'Applied'})</span>
+                  <span>-{formatPrice(placedOrderSummary?.discount ?? 0)}</span>
                 </div>
               )}
               <div className="flex justify-between font-bold">
                 <span>Total Paid</span>
-                <span className="text-forest-green">{formatPrice(total)}</span>
+                <span className="text-forest-green">{formatPrice(placedOrderSummary?.total ?? 0)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Payment</span>
-                <span>{form.payment_method === 'cash_on_delivery' ? 'Cash on Delivery' : 'Card (Paid)'}</span>
+                <span>{(placedOrderSummary?.paymentMethod ?? form.payment_method) === 'cash_on_delivery' ? 'Cash on Delivery' : 'Card (Paid)'}</span>
               </div>
             </div>
 

@@ -7,7 +7,6 @@ import BestSelling from '@/components/landing/BestSelling'
 import FreshOffers from '@/components/landing/FreshOffers'
 import HowItWorks from '@/components/landing/HowItWorks'
 import WhyChooseUs from '@/components/landing/WhyChooseUs'
-import Testimonials from '@/components/landing/Testimonials'
 import Newsletter from '@/components/landing/Newsletter'
 import Footer from '@/components/landing/Footer'
 import BackToTop from '@/components/ui/BackToTop'
@@ -23,7 +22,6 @@ export default function HomePage() {
         <FreshOffers />
         <HowItWorks />
         <WhyChooseUs />
-        <Testimonials />
         <Newsletter />
       </main>
       <Footer />

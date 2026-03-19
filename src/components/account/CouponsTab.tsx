@@ -41,7 +41,7 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
           </div>
           <p className="text-gray-600 font-semibold text-sm">No coupons yet</p>
           <p className="text-gray-400 text-xs mt-1 leading-relaxed">
-            Loyalty coupons arrive every 5 days.<br />New users get NEWBIE100 on signup.
+            Loyalty coupons arrive every 2 days and expire after 4 days.<br />New users get NEWBIE100 on signup.
           </p>
         </div>
       ) : (
@@ -76,11 +76,11 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
 
                 {/* Right panel — code & details */}
                 <div className={`flex-1 flex flex-col justify-between px-4 py-4 min-w-0 ${isActive ? 'bg-white' : 'bg-gray-50'}`}>
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
                       {/* Code + status */}
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-mono font-bold text-sm sm:text-base tracking-widest ${isActive ? 'text-charcoal' : 'text-gray-400'}`}>
+                        <span className={`block min-w-0 truncate pr-2 font-mono font-bold text-sm sm:text-base tracking-widest ${isActive ? 'text-charcoal' : 'text-gray-400'}`}>
                           {c.code}
                         </span>
                         <span
@@ -112,7 +112,7 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
                     {isActive && (
                       <button
                         onClick={() => copyCode(c.code)}
-                        className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold flex-shrink-0 transition-all ${
+                        className={`flex flex-shrink-0 flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                           copiedCode === c.code
                             ? 'bg-green-100 text-green-600 scale-95'
                             : 'bg-forest-green/8 border border-forest-green/20 text-forest-green hover:bg-forest-green/15'
