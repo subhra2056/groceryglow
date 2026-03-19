@@ -229,6 +229,7 @@ CREATE TABLE notifications (
 | 4 | checkout/page.tsx | Order success card showed `₹0.00` subtotal after checkout because it read totals from cleared cart state | Stored the placed order totals in local success-state and rendered the summary from that snapshot |
 | 5 | hooks/useLoyaltyCoupon.ts + CouponsTab.tsx | Loyalty coupons were generated on the wrong cadence and stayed valid too long | Changed loyalty issuance to once every 2 days, expiry to 4 days, and updated the related coupon copy |
 | 6 | account/page.tsx | Coupons tab only showed user-specific coupons and hid global coupons like `NEWBIE100` | Updated coupon loading to include global coupons and derive per-user used state from `coupon_uses` |
+| 7 | lib/supabase/client.ts + AuthContext.tsx | Invalid Supabase refresh tokens could keep surfacing as client auth errors during bootstrap | Reused a singleton browser client and cleared invalid local sessions during auth initialization and refresh handling |
 
 ---
 

@@ -30,9 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
 
   useLoyaltyCoupon(user)
+
+  const clearInvalidSession = useCallback(async () => {
+    await supabase.auth.signOut({ scope: 'local' })
+    setUser(null)
+    setProfile(null)
+  }, [supabase])
 
   const fetchProfile = useCallback(
     async (userId: string) => {
@@ -51,19 +57,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, fetchProfile])
 
   useEffect(() => {
-    // Get initial session — if refresh token is stale or network fails, sign out cleanly
-    supabase.auth.getUser().then(({ data: { user }, error }) => {
-      if (error) {
-        supabase.auth.signOut()
+    const bootstrapAuth = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+
+        if (error) {
+          await clearInvalidSession()
+          setLoading(false)
+          return
+        }
+
+        setUser(user)
+        if (user) await fetchProfile(user.id)
+      } catch {
+        await clearInvalidSession()
+      } finally {
         setLoading(false)
-        return
       }
-      setUser(user)
-      if (user) fetchProfile(user.id).finally(() => setLoading(false))
-      else setLoading(false)
-    }).catch(() => {
-      setLoading(false)
-    })
+    }
+
+    void bootstrapAuth()
 
     // Listen for auth state changes
     const {
@@ -71,22 +84,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       // Gracefully handle expired/invalid refresh tokens
       if (event === 'TOKEN_REFRESHED' && !session) {
-        supabase.auth.signOut()
-        setUser(null)
-        setProfile(null)
+        void clearInvalidSession()
         return
       }
       const currentUser = session?.user ?? null
       setUser(currentUser)
       if (currentUser) {
-        fetchProfile(currentUser.id)
+        void fetchProfile(currentUser.id)
       } else {
         setProfile(null)
       }
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase, fetchProfile])
+  }, [supabase, fetchProfile, clearInvalidSession])
 
   // Force logout if admin blocks the currently logged-in user
   useEffect(() => {
