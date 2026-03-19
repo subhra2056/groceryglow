@@ -161,9 +161,9 @@ function SignInContent() {
             <div>
               <div className="flex justify-between mb-1.5">
                 <label className="text-xs font-medium text-gray-600">Password</label>
-                <button type="button" className="text-xs text-forest-green hover:underline">
+                {/* <button type="button" className="text-xs text-forest-green hover:underline">
                   Forgot password?
-                </button>
+                </button> */}
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
