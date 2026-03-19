@@ -50,12 +50,12 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
             const expired = c.expires_at ? new Date(c.expires_at) < new Date() : false
             const status = c.is_used ? 'used' : expired ? 'expired' : 'active'
             const isActive = status === 'active'
+
             return (
               <div
                 key={c.id}
                 className={`relative flex rounded-2xl overflow-hidden shadow-sm transition-opacity ${!isActive ? 'opacity-50' : ''}`}
               >
-                {/* Left panel — discount amount */}
                 <div
                   className={`flex flex-col items-center justify-center px-4 sm:px-6 py-5 flex-shrink-0 min-w-[80px] sm:min-w-[96px] ${
                     isActive
@@ -63,22 +63,19 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
                       : 'bg-gray-300'
                   }`}
                 >
-                  <span className="text-white font-black text-2xl sm:text-3xl leading-none">₹{c.discount_amount}</span>
+                  <span className="text-white font-black text-2xl sm:text-3xl leading-none">â‚¹{c.discount_amount}</span>
                   <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1">OFF</span>
                 </div>
 
-                {/* Perforated divider */}
                 <div className="relative flex-shrink-0 flex items-center" style={{ width: '20px' }}>
-                  <div className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-cream`} />
+                  <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-cream" />
                   <div className={`w-px h-full border-l-2 border-dashed mx-auto ${isActive ? 'border-forest-green/25' : 'border-gray-200'}`} />
-                  <div className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-cream`} />
+                  <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-cream" />
                 </div>
 
-                {/* Right panel — code & details */}
                 <div className={`flex-1 flex flex-col justify-between px-4 py-4 min-w-0 ${isActive ? 'bg-white' : 'bg-gray-50'}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      {/* Code + status */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`block min-w-0 truncate pr-2 font-mono font-bold text-sm sm:text-base tracking-widest ${isActive ? 'text-charcoal' : 'text-gray-400'}`}>
                           {c.code}
@@ -92,23 +89,29 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
                               : 'bg-red-50 text-red-400'
                           }`}
                         >
-                          {status === 'active' ? '✓ Active' : status === 'used' ? 'Used' : 'Expired'}
+                          {status === 'active' ? 'âœ“ Active' : status === 'used' ? 'Used' : 'Expired'}
                         </span>
                       </div>
-                      {/* Description */}
+
                       <p className="text-xs text-gray-500 mt-1.5">
-                        Get <span className="font-semibold text-charcoal">₹{c.discount_amount} off</span> on orders above ₹{c.min_order_amount}
+                        Get <span className="font-semibold text-charcoal">â‚¹{c.discount_amount} off</span> on orders above â‚¹{c.min_order_amount}
                       </p>
-                      {/* Expiry */}
-                      {c.expires_at && (
-                        <p className={`text-[11px] mt-1 flex items-center gap-1 ${status === 'expired' ? 'text-red-400' : 'text-gray-400'}`}>
-                          🗓 {status === 'expired' ? 'Expired on' : 'Valid till'}{' '}
-                          {new Date(c.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </p>
-                      )}
+
+                      <p className={`text-[11px] mt-1 min-h-[16px] flex items-center gap-1 ${status === 'expired' ? 'text-red-400' : 'text-gray-400'}`}>
+                        {c.expires_at ? (
+                          <>
+                            <span>ðŸ—“</span>
+                            <span>
+                              {status === 'expired' ? 'Expired on' : 'Valid till'}{' '}
+                              {new Date(c.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="invisible">Valid till 00 Jan 0000</span>
+                        )}
+                      </p>
                     </div>
 
-                    {/* Copy button */}
                     {isActive && (
                       <button
                         onClick={() => copyCode(c.code)}
@@ -126,11 +129,10 @@ export default function CouponsTab({ coupons, dataLoading, copiedCode, copyCode 
                     )}
                   </div>
 
-                  {/* Bottom: min order note */}
                   {isActive && (
                     <div className="mt-3 pt-3 border-t border-dashed border-gray-100 flex items-center gap-1.5">
                       <Ticket className="w-3 h-3 text-gray-300 flex-shrink-0" />
-                      <p className="text-[10px] text-gray-400">Min. order ₹{c.min_order_amount} · Apply at checkout</p>
+                      <p className="text-[10px] text-gray-400">Min. order â‚¹{c.min_order_amount} Â· Apply at checkout</p>
                     </div>
                   )}
                 </div>
