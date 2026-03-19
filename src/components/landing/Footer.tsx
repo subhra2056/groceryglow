@@ -63,8 +63,8 @@ export default function Footer({ hideOnMobile = false }: { hideOnMobile?: boolea
             <div className="space-y-2">
               {[
                 { icon: Mail, text: 'hello@groceryglow.com' },
-                { icon: Phone, text: '+78432470144' },
-                { icon: MapPin, text: 'San Francisco, CA 94102' },
+                { icon: Phone, text: '+91 7478110896' },
+                { icon: MapPin, text: 'Bangalore, Karnataka 560001' },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5 text-gray-400 text-sm">
                   <Icon className="w-3.5 h-3.5 text-leaf-green flex-shrink-0" />
