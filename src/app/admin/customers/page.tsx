@@ -75,7 +75,8 @@ export default function AdminCustomersPage() {
         <div className="flex justify-center py-16"><LoadingSpinner size="lg" /></div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b border-gray-100">
                 <th className="px-5 py-3 text-left text-[11px] font-medium text-gray-400 uppercase tracking-wider">Customer</th>
@@ -157,7 +158,8 @@ export default function AdminCustomersPage() {
                 </tr>
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
     </div>

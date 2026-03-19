@@ -63,51 +63,53 @@ export default function BugReportsPage() {
   const selected = reports.find((r) => r.id === selectedId) ?? null
 
   return (
-    <div className="p-6 md:p-8 h-full">
+    <div className="p-4 sm:p-6 md:p-8 h-full">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <div className="w-8 h-8 bg-red-100 rounded-xl flex items-center justify-center">
+      <div className="mb-5 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <div className="w-8 h-8 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
             <Bug className="w-4 h-4 text-red-500" />
           </div>
           Bug Reports
         </h1>
-        <p className="text-gray-400 text-sm mt-1">Review and manage user-submitted bug reports</p>
+        <p className="text-gray-400 text-sm mt-1 max-w-xl">Review and manage user-submitted bug reports</p>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 xs:grid-cols-3 sm:grid-cols-3 gap-3 mb-5 sm:mb-6">
         {[
           { label: 'Open', count: openCount, color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-100' },
           { label: 'In Progress', count: inProgressCount, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
           { label: 'Resolved', count: resolvedCount, color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-100' },
         ].map(({ label, count, color, bg, border }) => (
           <div key={label} className={cn('rounded-2xl p-4 border', bg, border)}>
-            <p className={cn('text-2xl font-semibold tracking-tight', color)}>{count}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+            <p className={cn('text-2xl sm:text-3xl font-semibold tracking-tight', color)}>{count}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-2 mb-5">
-        {([['', 'All', reports.length], ['open', 'Open', openCount], ['in_progress', 'In Progress', inProgressCount], ['resolved', 'Resolved', resolvedCount]] as const).map(([val, label, count]) => (
-          <button
-            key={val}
-            onClick={() => { setFilterStatus(val); setSelectedId(null) }}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border',
-              filterStatus === val
-                ? 'bg-charcoal text-white border-charcoal'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
-            )}
-          >
-            {label}
-            <span className={cn('text-[10px] px-1.5 py-0.5 rounded-full', filterStatus === val ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500')}>
-              {count}
-            </span>
-          </button>
-        ))}
+      <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto">
+        <div className="flex gap-2 min-w-max">
+          {([['', 'All', reports.length], ['open', 'Open', openCount], ['in_progress', 'In Progress', inProgressCount], ['resolved', 'Resolved', resolvedCount]] as const).map(([val, label, count]) => (
+            <button
+              key={val}
+              onClick={() => { setFilterStatus(val); setSelectedId(null) }}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold transition-all border whitespace-nowrap',
+                filterStatus === val
+                  ? 'bg-charcoal text-white border-charcoal'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+              )}
+            >
+              {label}
+              <span className={cn('text-[10px] px-1.5 py-0.5 rounded-full', filterStatus === val ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500')}>
+                {count}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
@@ -121,9 +123,9 @@ export default function BugReportsPage() {
           <p className="text-xs text-gray-300 mt-1">Reports submitted by users will appear here</p>
         </div>
       ) : (
-        <div className={cn('flex gap-5', selected ? 'items-start' : '')}>
+        <div className={cn('flex flex-col xl:flex-row gap-4 sm:gap-5', selected ? 'items-start' : '')}>
           {/* List */}
-          <div className={cn('space-y-2', selected ? 'w-80 flex-shrink-0' : 'flex-1')}>
+          <div className={cn('space-y-3 w-full', selected ? 'xl:w-80 xl:flex-shrink-0' : 'flex-1')}>
             {reports.map((report) => {
               const cfg = STATUS_CONFIG[report.status]
               const StatusIcon = cfg.icon
@@ -139,8 +141,8 @@ export default function BugReportsPage() {
                       : 'border-gray-100 hover:border-gray-300 hover:shadow-sm'
                   )}
                 >
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="p-4 sm:p-5">
+                    <div className="flex items-start justify-between gap-3 mb-3">
                       <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border', cfg.bg, cfg.text, cfg.border)}>
                         <StatusIcon className="w-3 h-3" />
                         {cfg.label}
@@ -152,20 +154,20 @@ export default function BugReportsPage() {
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <p className={cn('text-sm text-charcoal font-medium leading-snug', selected ? 'line-clamp-2' : 'line-clamp-1')}>
+                    <p className={cn('text-sm sm:text-[15px] text-charcoal font-medium leading-snug', selected ? 'line-clamp-3' : 'line-clamp-2')}>
                       {report.description}
                     </p>
-                    <div className="flex items-center gap-3 mt-2.5">
-                      <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-3">
+                      <span className="flex items-center gap-1 text-[10px] sm:text-[11px] text-gray-400 min-w-0">
                         <Mail className="w-3 h-3" />
-                        {report.user_email ?? 'Guest'}
+                        <span className="truncate">{report.user_email ?? 'Guest'}</span>
                       </span>
-                      <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                      <span className="flex items-center gap-1 text-[10px] sm:text-[11px] text-gray-400">
                         <Calendar className="w-3 h-3" />
                         {formatDate(report.created_at)}
                       </span>
                       {report.screenshot_url && (
-                        <span className="flex items-center gap-1 text-[10px] text-forest-green">
+                        <span className="flex items-center gap-1 text-[10px] sm:text-[11px] text-forest-green">
                           <ImageIcon className="w-3 h-3" /> Screenshot
                         </span>
                       )}
@@ -178,10 +180,10 @@ export default function BugReportsPage() {
 
           {/* Detail panel */}
           {selected && (
-            <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="w-full flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               {/* Detail header */}
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                   {(() => { const cfg = STATUS_CONFIG[selected.status]; const I = cfg.icon; return (
                     <span className={cn('inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border', cfg.bg, cfg.text, cfg.border)}>
                       <I className="w-3.5 h-3.5" />{cfg.label}
@@ -197,15 +199,15 @@ export default function BugReportsPage() {
                 </button>
               </div>
 
-              <div className="p-6 space-y-5">
+              <div className="p-4 sm:p-6 space-y-5">
                 {/* Reporter */}
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Reporter</p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-forest-green/10 flex items-center justify-center">
                       <Mail className="w-3.5 h-3.5 text-forest-green" />
                     </div>
-                    <span className="text-sm font-medium text-charcoal">{selected.user_email ?? 'Guest / Not logged in'}</span>
+                    <span className="text-sm font-medium text-charcoal break-all">{selected.user_email ?? 'Guest / Not logged in'}</span>
                   </div>
                 </div>
 
@@ -244,7 +246,7 @@ export default function BugReportsPage() {
                 {/* Status update */}
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Update Status</p>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {(['open', 'in_progress', 'resolved'] as const).map((s) => {
                       const cfg = STATUS_CONFIG[s]
                       const isCurrent = selected.status === s
